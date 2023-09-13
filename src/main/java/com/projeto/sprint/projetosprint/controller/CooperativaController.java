@@ -120,4 +120,30 @@ public class CooperativaController {
         return ResponseEntity.status(204).build();
     }
 
+
+    @PostMapping("/cadastrarLoteCooperativa")
+    public ResponseEntity<List<Cooperativa>> cadastrarLoteCooperativa(@RequestBody List<Cooperativa> dados) {
+
+        for (Cooperativa cooperativa : dados) {
+            //VALIDAÇÕES DOS CAMPOS
+            if (cooperativa.getNome() == null || cooperativa.getNome().isBlank()) {
+                return ResponseEntity.status(400).build();
+            }
+
+            if (cooperativa.getCnpj().isBlank() || cooperativa.getCnpj().isEmpty()) {
+                return ResponseEntity.status(400).build();
+            }
+
+            if (cooperativa.getEmail().isEmpty() || cooperativa.getEmail().isBlank()) {
+                return ResponseEntity.status(400).build();
+            }
+
+            if (cooperativa.getSenha().isEmpty() || cooperativa.getSenha().isBlank()) {
+                return ResponseEntity.status(400).build();
+            }
+
+            repository.save(cooperativa);
+        }
+        return ResponseEntity.status(200).body(dados);
+    }
 }

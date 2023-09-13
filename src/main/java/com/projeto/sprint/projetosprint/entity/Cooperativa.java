@@ -23,6 +23,7 @@ public class Cooperativa {
 
     private String senha;
 
+
     /*
     @ManyToOne
     @JoinColumn(name = "cooperativa_id")
