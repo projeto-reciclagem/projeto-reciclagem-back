@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequestMapping("/cooperativas")
 @AllArgsConstructor
 public class CooperativaController {
-
+ @Autowired
     private CooperativaRepository repository;
 
 
