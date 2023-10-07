@@ -17,11 +17,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/cooperativas")
-@AllArgsConstructor
 public class CooperativaController {
- @Autowired
+
     private CooperativaRepository repository;
 
+    public CooperativaController(CooperativaRepository repository) {
+        this.repository = repository;
+    }
 
     //LISTA TODAS AS COOPERATIVAS
     @GetMapping("/listarCooperativa")

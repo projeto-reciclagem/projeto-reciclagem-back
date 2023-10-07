@@ -16,18 +16,14 @@ import java.util.Optional;
 //@AllArgsConstructor
 public class CondominioController {
 
-//    @Autowired
     private final CondominioRepository repository;
     public CondominioController(CondominioRepository repository){
         this.repository = repository;
     }
 
 
-
     //Lista dos Condominios
-
-
-    @GetMapping
+    @GetMapping("/listarCondominio")
     public ResponseEntity<List<Condominio>> listar(){
         List<Condominio> condominio = this.repository.findAll();
         if(condominio.isEmpty()){
@@ -36,8 +32,9 @@ public class CondominioController {
 
         return ResponseEntity.status(200).body(condominio);
     }
+
     //Buscando condominio por ID
-    @GetMapping("/buscar-condominio-por-id/{id}")
+    @GetMapping("/buscarCondominioPorId/{id}")
     public ResponseEntity<Condominio> buscarCondominioPorId(@PathVariable int id){
 
         Optional<Condominio> registroOpt = this.repository.findById(id);
@@ -60,7 +57,7 @@ public class CondominioController {
     }
 
     //Atualizar os dados do condominio
-    @PutMapping("/atualizar-condominio-por-id/{id}")
+    @PutMapping("/atualizarCondominioPorId/{id}")
     public ResponseEntity<Condominio> condominio(@RequestBody @Valid Condominio dados){
 
         dados.setId(dados.getId());
@@ -68,10 +65,8 @@ public class CondominioController {
         return ResponseEntity.status(200).body(dados);
     }
 
-    private void setId(Condominio dados) {
-    }
-
-    @DeleteMapping("/deletar-condominio-por-id/{id}")
+    //DELETAR UM CONDOMINIO
+    @DeleteMapping("/deletarCondominioPorId/{id}")
     public ResponseEntity<Void> deletarCondominioPorId(@PathVariable int id){
 
         if(!this.repository.existsById(id)){
@@ -81,7 +76,4 @@ public class CondominioController {
         this.repository.deleteById(id);
         return ResponseEntity.status(204).build();
     }
-
-
-
 }
