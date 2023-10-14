@@ -1,16 +1,16 @@
-package com.projeto.sprint.projetosprint.controller;
+package com.projeto.sprint.projetosprint.api.controller;
 
 
-import com.projeto.sprint.projetosprint.entity.Cooperativa;
-import com.projeto.sprint.projetosprint.repository.CooperativaRepository;
-import jakarta.persistence.Id;
-import jakarta.websocket.server.PathParam;
+import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
+import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
+import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
+import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaLoginDto;
+import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaTokenDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,8 @@ import java.util.Optional;
 public class CooperativaController {
  @Autowired
     private CooperativaRepository repository;
+
+    private CooperativaService cooperativaService;
 
 
     //LISTA TODAS AS COOPERATIVAS
@@ -75,6 +77,11 @@ public class CooperativaController {
         //ADICIONANDO UMA NOVA COOPERATIVA
         repository.save(dados);
         return ResponseEntity.status(201).body(dados);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<CooperativaTokenDto> login(@RequestBody CooperativaLoginDto cooperativaLoginDto){
+        CooperativaTokenDto cooperativaTokenDto = cooperativaService.autenticar(cooperativaLoginDto);
+        return ResponseEntity.status(200).body(cooperativaTokenDto);
     }
 
     //ATUALIZANDO INFORMAÇÕES DA COOPERATIVA

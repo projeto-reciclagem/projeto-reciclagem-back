@@ -1,4 +1,4 @@
-package com.projeto.sprint.projetosprint.entity;
+package com.projeto.sprint.projetosprint.domain.cooperativa;
 
 import jakarta.persistence.*;
 import lombok.*;

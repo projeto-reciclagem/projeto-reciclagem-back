@@ -1,10 +1,12 @@
-package com.projeto.sprint.projetosprint.controller;
+package com.projeto.sprint.projetosprint.api.controller;
 
-import com.projeto.sprint.projetosprint.entity.Condominio;
-import com.projeto.sprint.projetosprint.repository.CondominioRepository;
+import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
+import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
+import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
+import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
+import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioLoginDto;
+import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioTokenDto;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,9 @@ import java.util.Optional;
 public class CondominioController {
 
 //    @Autowired
-    private final CondominioRepository repository;
+    private CondominioRepository repository;
+
+    private CondominioService condominioService;
     public CondominioController(CondominioRepository repository){
         this.repository = repository;
     }
@@ -52,11 +56,28 @@ public class CondominioController {
 
     //Cadastrando Condominio
     @PostMapping("/cadastrarCondominio")
-    public ResponseEntity<Condominio> cadastrarCondominio(@RequestBody @Valid Condominio dados){
+    public ResponseEntity<Condominio> cadastrarCondominio(@RequestBody Condominio dados){
 
-        Condominio condominioSalva =  this.repository.save(dados);
-        return ResponseEntity.status(201).body(condominioSalva);
+        //VALIDAÇÕES DOS CAMPOS
+        if(dados.getNome() == null || dados.getNome().isBlank()){
+            return ResponseEntity.status(400).build();
+        }
 
+        if(dados.getCnpj().isBlank() || dados.getCnpj().isEmpty()){
+            return ResponseEntity.status(400).build();
+        }
+
+        if(dados.getEmail().isEmpty() || dados.getEmail().isBlank()){
+            return ResponseEntity.status(400).build();
+        }
+
+        if(dados.getSenha().isEmpty() || dados.getSenha().isBlank()){
+            return ResponseEntity.status(400).build();
+        }
+
+        //ADICIONANDO UMA NOVA COOPERATIVA
+        repository.save(dados);
+        return ResponseEntity.status(201).body(dados);
     }
 
     //Atualizar os dados do condominio
@@ -66,6 +87,11 @@ public class CondominioController {
         dados.setId(dados.getId());
         this.repository.save(dados);
         return ResponseEntity.status(200).body(dados);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<CondominioTokenDto> login(@RequestBody CondominioLoginDto condominioLoginDto){
+        CondominioTokenDto condominioTokenDto = this.condominioService.autenticar(condominioLoginDto);
+        return ResponseEntity.status(200).body(condominioTokenDto);
     }
 
     private void setId(Condominio dados) {
