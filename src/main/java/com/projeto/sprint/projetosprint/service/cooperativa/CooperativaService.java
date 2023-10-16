@@ -1,9 +1,9 @@
-package com.projeto.sprint.projetosprint.service;
+package com.projeto.sprint.projetosprint.service.cooperativa;
 
-import com.projeto.sprint.projetosprint.entity.Cooperativa;
+import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
-import com.projeto.sprint.projetosprint.repository.CooperativaRepository;
+import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class CooperativaService {
 
     public Cooperativa cadastrarCooperativa(Cooperativa dados){
 
-        if(this.repository.countByEmailContainsIgnoreCase(dados.getEmail()) > 0){
+        if(this.repository.existsByEmail(dados.getEmail())){
             throw new EntidadeDuplicadaException("Email já cadastrado");
         }
 

@@ -1,7 +1,7 @@
-package com.projeto.sprint.projetosprint.controller;
+package com.projeto.sprint.projetosprint.api.controller;
 
-import com.projeto.sprint.projetosprint.entity.Cooperativa;
-import com.projeto.sprint.projetosprint.service.CooperativaService;
+import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
+import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
