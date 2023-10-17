@@ -2,7 +2,6 @@ package com.projeto.sprint.projetosprint.controller;
 
 import com.projeto.sprint.projetosprint.entity.Condominio;
 import com.projeto.sprint.projetosprint.repository.CondominioRepository;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,25 +50,30 @@ public class CondominioController {
     }
 
     //Cadastrando Condominio
-    @PostMapping("/cadastrarCondominio")
-    public ResponseEntity<Condominio> cadastrarCondominio(@RequestBody @Valid Condominio dados){
-
-        Condominio condominioSalva =  this.repository.save(dados);
-        return ResponseEntity.status(201).body(condominioSalva);
-
+    public ResponseEntity<?> cadastrarCondominio(@RequestBody @Valid Condominio dados) {
+        Condominio condominioSalvo = this.repository.save(dados);
+        return ResponseEntity.status(201).body(condominioSalvo);
     }
-
     //Atualizar os dados do condominio
     @PutMapping("/atualizar-condominio-por-id/{id}")
-    public ResponseEntity<Condominio> condominio(@RequestBody @Valid Condominio dados){
+    public ResponseEntity<?> atualizarCondominio(@PathVariable int id, @RequestBody @Valid Condominio dados) {
+        Optional<Condominio> condominioOpt = this.repository.findById(id);
+        if (condominioOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Condomínio não encontrado");
+        }
 
-        dados.setId(dados.getId());
-        this.repository.save(dados);
-        return ResponseEntity.status(200).body(dados);
+        Condominio condominioSalvo = condominioOpt.get();
+        condominioSalvo.setNome(dados.getNome());
+        condominioSalvo.setCnpj(dados.getCnpj());
+        condominioSalvo.setEmail(dados.getEmail());
+        condominioSalvo.setSenha(dados.getSenha());
+        condominioSalvo.setQtdMoradores(dados.getQtdMoradores());
+        condominioSalvo.setQtdCasa(dados.getQtdCasa());
+
+        this.repository.save(condominioSalvo);
+        return ResponseEntity.status(200).body(condominioSalvo);
     }
 
-    private void setId(Condominio dados) {
-    }
 
     @DeleteMapping("/deletar-condominio-por-id/{id}")
     public ResponseEntity<Void> deletarCondominioPorId(@PathVariable int id){
