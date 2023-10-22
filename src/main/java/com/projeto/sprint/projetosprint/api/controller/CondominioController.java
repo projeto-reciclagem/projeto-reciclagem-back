@@ -1,11 +1,10 @@
 package com.projeto.sprint.projetosprint.api.controller;
 
 import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
-import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
-import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioLoginDto;
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioTokenDto;
+import com.projeto.sprint.projetosprint.service.usuario.condominio.CondominioService;
+import com.projeto.sprint.projetosprint.service.usuario.condominio.CondominioLoginDto;
+import com.projeto.sprint.projetosprint.service.usuario.condominio.CondominioTokenDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

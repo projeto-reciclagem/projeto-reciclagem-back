@@ -1,16 +1,13 @@
-package com.projeto.sprint.projetosprint.service.cooperativa;
+package com.projeto.sprint.projetosprint.service.usuario.cooperativa;
 
-import com.projeto.sprint.projetosprint.api.configuration.security.jwt.GerenciadorTokenJwt;
+
+
+import com.projeto.sprint.projetosprint.api.configuration.security.GerenciadorTokenJwt;
 import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
-import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
-import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaLoginDto;
-import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaTokenDto;
-import com.projeto.sprint.projetosprint.service.cooperativa.dto.CooperativaCriacaoDto;
-import com.projeto.sprint.projetosprint.service.cooperativa.dto.CooperativaMapper;
-import org.apache.catalina.authenticator.SpnegoAuthenticator;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.dto.CooperativaCriacaoDto;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.dto.CooperativaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.endpoint.SecurityContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,7 +21,6 @@ public class CooperativaService {
 
     @Autowired
     private CooperativaRepository cooperativaRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 

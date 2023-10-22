@@ -1,7 +1,7 @@
-package com.projeto.sprint.projetosprint.service.condominio.dto;
+package com.projeto.sprint.projetosprint.service.usuario.condominio.dto;
 
 import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioTokenDto;
+import com.projeto.sprint.projetosprint.service.usuario.condominio.CondominioTokenDto;
 
 public class CondominioMapper {
 

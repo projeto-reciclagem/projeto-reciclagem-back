@@ -1,7 +1,9 @@
 package com.projeto.sprint.projetosprint.api.configuration.security;
-
-import com.projeto.sprint.projetosprint.api.configuration.security.jwt.GerenciadorTokenJwt;
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.AutenticacaoService;
+import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCond;
+import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCoop;
+import jakarta.servlet.Filter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +14,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.AntPathMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,54 +31,52 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@AllArgsConstructor
+@NoArgsConstructor
 public class SecurityConfiguracao {
     private static final String ORIGENS_PERMITIDAS = "*";
 
     @Autowired
-    private AutenticacaoService autenticacaoService;
+    private AutenticacaoServiceCond autenticacaoServiceCond;
+
+    @Autowired
+    private AutenticacaoServiceCoop autenticacaoServiceCoop;
 
     @Autowired
     private  AutenticacaoEntryPoint autenticacaoEntryPoint;
 
-    private  final AntPathMatcher[] URLS_PERMITIDAS = {
-            new AntPathMatcher("/swagger-ui/**"),
-            new AntPathMatcher("/swagger-ui.html"),
-            new AntPathMatcher("/swagger-resources"),
-            new AntPathMatcher("/swagger-resources/**"),
-            new AntPathMatcher("/configuration/ui"),
-            new AntPathMatcher("/configuration/security"),
-            new AntPathMatcher("/api/public/**"),
-            new AntPathMatcher("/api/public/authenticate"),
-            new AntPathMatcher("/webjars/**"),
-            new AntPathMatcher("/v3/api-docs/**"),
-            new AntPathMatcher("/actuator/*"),
-            new AntPathMatcher("/usuarios/login/**"),
-            new AntPathMatcher("/h2-console/**"),
-            new AntPathMatcher("/error/**")
+    private  final AntPathRequestMatcher[] URLS_PERMITIDAS = {
+            new AntPathRequestMatcher("/swagger-ui/**"),
+            new AntPathRequestMatcher("/swagger-ui.html"),
+            new AntPathRequestMatcher("/swagger-resources"),
+            new AntPathRequestMatcher("/swagger-resources/**"),
+            new AntPathRequestMatcher("/configuration/ui"),
+            new AntPathRequestMatcher("/configuration/security"),
+            new AntPathRequestMatcher("/api/public/**"),
+            new AntPathRequestMatcher("/api/public/authenticate"),
+            new AntPathRequestMatcher("/webjars/**"),
+            new AntPathRequestMatcher("/v3/api-docs/**"),
+            new AntPathRequestMatcher("/actuator/*"),
+            new AntPathRequestMatcher("/usuarios/login"),
+            new AntPathRequestMatcher("/cooperativas", "POST"),
+            new AntPathRequestMatcher("/condominios", "POST"),
+            new AntPathRequestMatcher("/h2-console/**"),
+            new AntPathRequestMatcher("/error/**")
+
     };
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
-        http.headers()
-                .frameOptions().disable()
-                .and()
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception {
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .authorizeHttpRequests(
+                        authorize -> {
+                            authorize.requestMatchers(Arrays.toString(URLS_PERMITIDAS)).permitAll();
+                            authorize.anyRequest().authenticated();
+                        }
                 )
-                .exceptionHandling()
-                .authenticationEntryPoint(autenticacaoEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .exceptionHandling(eh -> eh.authenticationEntryPoint(autenticacaoEntryPoint))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
-
+        http.addFilterBefore(jwtAuthenticationFilterBean(),UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -82,27 +84,32 @@ public class SecurityConfiguracao {
     public AuthenticationManager authManager(HttpSecurity http)throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(new AutenticacaoProvider(autenticacaoService,passwordEnconder()));
-        return  authenticationManagerBuilder.build();
+
+        authenticationManagerBuilder.authenticationProvider(new AutenticacaoProvider(
+                autenticacaoServiceCond, autenticacaoServiceCoop,passwordEnconder()
+                ));
+
+        return authenticationManagerBuilder.build();
     }
 
     @Bean
-    public  AutenticacaoEntryPoint jwtAuthenticationFilterBean(){
-        return  new AutenticacaoEntryPoint();
+    public AutenticacaoEntryPoint jwtAuthenticationEntryPoint(){
+        return new AutenticacaoEntryPoint();
     }
 
     @Bean
-    public AutenticacaoFilter jwtAuthenticationEntryPointBean(){
-        return  new AutenticacaoFilter(autenticacaoService, jwtAuthenticationFilterBean());
+    public Filter jwtAuthenticationFilterBean(){
+        return  new AutenticacaoFilter(autenticacaoServiceCoop,jwtAuthenticationUtilBean());
     }
+
 
     @Bean
     public GerenciadorTokenJwt jwtAuthenticationUtilBean(){
-        return  new BCryptPasswordEncoder();
+        return  new GerenciadorTokenJwt();
     }
 
     @Bean
-    public PasswordEnconder passwordEnconder(){
+    public PasswordEncoder passwordEnconder(){
         return  new BCryptPasswordEncoder();
     }
 

@@ -3,9 +3,9 @@ package com.projeto.sprint.projetosprint.api.controller;
 
 import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
-import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
-import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaLoginDto;
-import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaTokenDto;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.CooperativaService;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.CooperativaLoginDto;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.CooperativaTokenDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class CooperativaController {
 
 
     //LISTA TODAS AS COOPERATIVAS
-    @GetMapping("/listarCooperativa")
+    @GetMapping("/listar-cooperativa")
     public ResponseEntity<List<Cooperativa>> listarCooperativa(){
 
         List<Cooperativa> registros = this.repository.findAll();
@@ -40,7 +40,7 @@ public class CooperativaController {
     }
 
     //BUSCA A COOPERATIVA POR ID
-    @GetMapping("/buscarCooperativaPorId/{id}")
+    @GetMapping("/buscar-cooperativa-porid/{id}")
     public ResponseEntity<Cooperativa> buscarCooperativaPorId(@PathVariable int id){
 
         Optional<Cooperativa> registroOpt = this.repository.findById(id);
@@ -54,7 +54,7 @@ public class CooperativaController {
     }
 
     //CADASTRA A COOPERATIVA
-    @PostMapping("/cadastrarCooperativa")
+    @PostMapping("/cadastrar-cooperativa")
     public ResponseEntity<Cooperativa> cadastrarCooperativa(@RequestBody Cooperativa dados){
 
         //VALIDAÇÕES DOS CAMPOS
@@ -85,7 +85,7 @@ public class CooperativaController {
     }
 
     //ATUALIZANDO INFORMAÇÕES DA COOPERATIVA
-    @PutMapping("/atualizarCooperativaPorId/{id}")
+    @PutMapping("/atualizar-cooperativa-corid/{id}")
     public ResponseEntity<Cooperativa> atualizarCooperativa(@PathVariable int id, @RequestBody Cooperativa dados){
 
         //VALIDAÇÕES DOS CAMPOS QUE SERÃO RECEBIDOS

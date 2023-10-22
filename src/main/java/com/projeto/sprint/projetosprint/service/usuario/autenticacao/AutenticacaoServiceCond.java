@@ -1,17 +1,14 @@
-package com.projeto.sprint.projetosprint.service.condominio.autenticacao;
-
+package com.projeto.sprint.projetosprint.service.usuario.autenticacao;
 import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
-import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioDetalhesDto;
+import com.projeto.sprint.projetosprint.service.usuario.condominio.CondominioDetalhesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.util.List;
+import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
 import java.util.Optional;
 
-public class AutenticacaoService implements UserDetailsService {
+public class AutenticacaoServiceCond implements UserDetailsService {
     @Autowired
     private CondominioRepository condominioRepository;
 

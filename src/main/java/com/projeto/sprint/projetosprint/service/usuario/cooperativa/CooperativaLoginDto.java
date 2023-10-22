@@ -1,4 +1,4 @@
-package com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto;
+package com.projeto.sprint.projetosprint.service.usuario.cooperativa;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.projeto.sprint.projetosprint.service.condominio.dto;
+package com.projeto.sprint.projetosprint.service.usuario.cooperativa.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.br.CNPJ;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CondominioCriacaoDto {
+public class CooperativaCriacaoDto {
     @NotBlank
     @Valid
     private String nome;
@@ -22,7 +22,5 @@ public class CondominioCriacaoDto {
     private String email;
 
     private String senha;
-    private Integer qtdMoradores;
 
-    private Integer qtdCasa;
 }

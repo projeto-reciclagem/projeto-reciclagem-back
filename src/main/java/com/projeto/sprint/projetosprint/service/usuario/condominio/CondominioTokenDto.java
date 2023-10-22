@@ -1,4 +1,4 @@
-package com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto;
+package com.projeto.sprint.projetosprint.service.usuario.condominio;
 
 import lombok.Getter;
 import lombok.Setter;

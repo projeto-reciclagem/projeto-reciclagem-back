@@ -1,6 +1,7 @@
 package com.projeto.sprint.projetosprint.api.configuration.security;
 
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.AutenticacaoService;
+import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCond;
+import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCoop;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,25 +12,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class AutenticacaoProvider implements AuthenticationProvider {
 
-    private final AutenticacaoService usuarioAutorizacaoService;
-
+    private final AutenticacaoServiceCond autenticacaoServiceCond;
+    private final AutenticacaoServiceCoop autenticacaoServiceCoop;
     private final PasswordEncoder passwordEncoder;
 
-    public AutenticacaoProvider(AutenticacaoService usuarioAutorizacaoService, PasswordEncoder passwordEncoder) {
-        this.usuarioAutorizacaoService = usuarioAutorizacaoService;
+    public AutenticacaoProvider(AutenticacaoServiceCond autenticacaoServiceCond, AutenticacaoServiceCoop autenticacaoServiceCoop, PasswordEncoder passwordEncoder) {
+        this.autenticacaoServiceCond = autenticacaoServiceCond;
+        this.autenticacaoServiceCoop = autenticacaoServiceCoop;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Authentication authenticate( final Authentication authentication) throws AuthenticationException {
-
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
 
-        UserDetails userDetails = this.usuarioAutorizacaoService.loadUserByUsername(username);
+        UserDetails userDetailsCoop = this.autenticacaoServiceCoop.loadUserByUsername(username);
 
-        if(passwordEncoder.matches(password,userDetails.getPassword())){
-            return  new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+        //UserDetails userDetailsCond = this.autenticacaoServiceCond.loadUserByUsername(username);
+
+        if(this.passwordEncoder.matches(password,userDetailsCoop.getPassword())) {
+            return new UsernamePasswordAuthenticationToken(userDetailsCoop, null, userDetailsCoop.getAuthorities());
+        /*}else if (this.passwordEncoder.matches(password,userDetailsCond.getPassword())){
+            return  new UsernamePasswordAuthenticationToken(userDetailsCond, null,userDetailsCond.getAuthorities());*/
         } else {
             throw new BadCredentialsException("Usuário ou senha inválidos");
         }

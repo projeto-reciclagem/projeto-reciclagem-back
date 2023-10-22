@@ -1,18 +1,16 @@
-package com.projeto.sprint.projetosprint.service.cooperativa.autenticacao;
-
+package com.projeto.sprint.projetosprint.service.usuario.autenticacao;
 import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
-import com.projeto.sprint.projetosprint.service.condominio.autenticacao.dto.CondominioDetalhesDto;
-import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaDetalhesDto;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.CooperativaDetalhesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
 import java.util.Optional;
 
-public class AutenticacaoService implements UserDetailsService {
+
+public class AutenticacaoServiceCoop implements UserDetailsService {
     @Autowired
     private CooperativaRepository cooperativaRepository;
 

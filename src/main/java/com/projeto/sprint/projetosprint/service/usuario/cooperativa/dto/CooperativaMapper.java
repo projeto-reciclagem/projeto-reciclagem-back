@@ -1,7 +1,7 @@
-package com.projeto.sprint.projetosprint.service.cooperativa.dto;
+package com.projeto.sprint.projetosprint.service.usuario.cooperativa.dto;
 
 import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
-import com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto.CooperativaTokenDto;
+import com.projeto.sprint.projetosprint.service.usuario.cooperativa.CooperativaTokenDto;
 
 public class CooperativaMapper {
 

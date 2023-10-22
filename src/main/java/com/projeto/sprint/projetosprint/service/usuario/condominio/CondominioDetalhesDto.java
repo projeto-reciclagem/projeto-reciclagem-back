@@ -1,13 +1,12 @@
-package com.projeto.sprint.projetosprint.service.cooperativa.autenticacao.dto;
+package com.projeto.sprint.projetosprint.service.usuario.condominio;
 
 import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
-import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class CooperativaDetalhesDto implements UserDetails {
+public class CondominioDetalhesDto implements UserDetails {
 
     private String nome;
 
@@ -17,15 +16,21 @@ public class CooperativaDetalhesDto implements UserDetails {
 
     private String senha;
 
+    private Integer qtdMoradores;
 
-    public CooperativaDetalhesDto(Cooperativa cooperativa){
-        this.nome = cooperativa.getNome();
-        this.cnpj = cooperativa.getCnpj();
-        this.email = cooperativa.getEmail();
-        this.senha = cooperativa.getSenha();
+    private Integer qtdCasa;
+
+    public CondominioDetalhesDto(Condominio condominio) {
+        this.nome = condominio.getNome();
+        this.cnpj = condominio.getCnpj();
+        this.email = condominio.getEmail();
+        this.senha = condominio.getSenha();
+        this.qtdMoradores = condominio.getQtdMoradores();
+        this.qtdCasa = condominio.getQtdCasa();
     }
 
-    public String getNome() {
+
+    public String getNome(){
         return nome;
     }
 
@@ -33,6 +38,13 @@ public class CooperativaDetalhesDto implements UserDetails {
         return cnpj;
     }
 
+    public Integer getQtdMoradores() {
+        return qtdMoradores;
+    }
+
+    public Integer getQtdCasa() {
+        return qtdCasa;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
