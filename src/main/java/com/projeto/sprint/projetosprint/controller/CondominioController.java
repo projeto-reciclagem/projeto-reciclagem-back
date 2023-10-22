@@ -1,4 +1,4 @@
-package com.projeto.sprint.projetosprint.api.controller;
+package com.projeto.sprint.projetosprint.controller;
 
 import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
@@ -23,7 +23,7 @@ public class CondominioController {
     }
 
     //Lista condominio
-    @GetMapping("/listarCondominio")
+    @GetMapping("/listar-condominios")
     public ResponseEntity<List<Condominio>> listar(){
         List<Condominio> condominio = this.service.listarCondominio();
 
@@ -33,7 +33,7 @@ public class CondominioController {
     }
 
     //Buscando condominio por ID
-    @GetMapping("/buscarCondominioPorId/{id}")
+    @GetMapping("/buscar-condominio-por-id/{id}")
     public ResponseEntity<Condominio> buscarCondominioPorId(@PathVariable int id){
         return ResponseEntity.ok(
                 this.service.buscaCondominioId(id)
@@ -41,7 +41,7 @@ public class CondominioController {
     }
 
     //Cadastrando Condominio
-    @PostMapping("/cadastrarCondominio")
+    @PostMapping("/cadastrar-condominio")
     public ResponseEntity<Condominio> cadastrarCondominio(@RequestBody Condominio dados){
 
         Condominio condominioSalvo =  this.service.cadastrarCondominio(dados);
@@ -56,7 +56,7 @@ public class CondominioController {
     }
 
     //Atualizar os dados do condominio
-    @PutMapping("/atualizarCondominioPorId/{id}")
+    @PutMapping("/atualizar-condominio/{id}")
     public ResponseEntity<Condominio> condominio(@RequestBody @Valid Condominio dados){
 
         dados.setId(dados.getId());
@@ -64,7 +64,7 @@ public class CondominioController {
         return ResponseEntity.ok(dados);
     }
 
-    @DeleteMapping("/deletarCondominioPorId/{id}")
+    @DeleteMapping("/deletar-condominio/{id}")
     public ResponseEntity<Void> deletarCondominioPorId(@PathVariable int id){
 
         this.service.deletarCondominio(id);
