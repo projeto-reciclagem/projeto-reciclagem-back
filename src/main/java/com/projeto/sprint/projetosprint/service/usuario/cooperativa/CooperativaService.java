@@ -31,7 +31,7 @@ public class CooperativaService {
     private AuthenticationManager authenticationManager;
 
     public void criar(CooperativaCriacaoDto cooperativaCriacaoDto){
-        final Cooperativa novaCooperativa = CooperativaMapper.of(cooperativaCriacaoDto);
+         Cooperativa novaCooperativa = CooperativaMapper.of(cooperativaCriacaoDto);
 
         String senhaCriptografada = passwordEncoder.encode(novaCooperativa.getSenha());
         novaCooperativa.setSenha(senhaCriptografada);
@@ -40,6 +40,7 @@ public class CooperativaService {
 
 
     public CooperativaTokenDto autenticar (CooperativaLoginDto cooperativaLoginDto){
+
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(cooperativaLoginDto.getEmail(), cooperativaLoginDto.getSenha());
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);

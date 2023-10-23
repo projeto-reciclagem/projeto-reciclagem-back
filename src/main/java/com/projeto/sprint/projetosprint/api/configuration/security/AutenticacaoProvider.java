@@ -1,6 +1,5 @@
 package com.projeto.sprint.projetosprint.api.configuration.security;
 
-import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCond;
 import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCoop;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,12 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class AutenticacaoProvider implements AuthenticationProvider {
 
-    private final AutenticacaoServiceCond autenticacaoServiceCond;
     private final AutenticacaoServiceCoop autenticacaoServiceCoop;
     private final PasswordEncoder passwordEncoder;
 
-    public AutenticacaoProvider(AutenticacaoServiceCond autenticacaoServiceCond, AutenticacaoServiceCoop autenticacaoServiceCoop, PasswordEncoder passwordEncoder) {
-        this.autenticacaoServiceCond = autenticacaoServiceCond;
+    public AutenticacaoProvider( AutenticacaoServiceCoop autenticacaoServiceCoop, PasswordEncoder passwordEncoder) {
         this.autenticacaoServiceCoop = autenticacaoServiceCoop;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,14 +26,10 @@ public class AutenticacaoProvider implements AuthenticationProvider {
 
         UserDetails userDetailsCoop = this.autenticacaoServiceCoop.loadUserByUsername(username);
 
-        //UserDetails userDetailsCond = this.autenticacaoServiceCond.loadUserByUsername(username);
-
         if(this.passwordEncoder.matches(password,userDetailsCoop.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetailsCoop, null, userDetailsCoop.getAuthorities());
-        /*}else if (this.passwordEncoder.matches(password,userDetailsCond.getPassword())){
-            return  new UsernamePasswordAuthenticationToken(userDetailsCond, null,userDetailsCond.getAuthorities());*/
         } else {
-            throw new BadCredentialsException("Usuário ou senha inválidos");
+            throw new BadCredentialsException("Usuário e/ou senha inválidos");
         }
     }
 

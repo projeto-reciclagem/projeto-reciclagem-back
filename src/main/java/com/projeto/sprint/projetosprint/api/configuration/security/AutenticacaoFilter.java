@@ -23,12 +23,10 @@ import java.util.Objects;
 public class AutenticacaoFilter extends OncePerRequestFilter {
     private static  final  Logger LOGGER = LoggerFactory.getLogger(AutenticacaoFilter.class);
     private AutenticacaoServiceCoop autenticacaoServiceCoop;
-    //private AutenticacaoServiceCond autenticacaoServiceCond;
     private GerenciadorTokenJwt jwtTokenManager;
 
-    public AutenticacaoFilter(AutenticacaoServiceCoop autenticacaoServiceCoop /*AutenticacaoServiceCond autenticacaoServiceCond*/, GerenciadorTokenJwt jwtTokenManager) {
+    public AutenticacaoFilter(AutenticacaoServiceCoop autenticacaoServiceCoop, GerenciadorTokenJwt jwtTokenManager) {
         this.autenticacaoServiceCoop = autenticacaoServiceCoop;
-        //this.autenticacaoServiceCond = autenticacaoServiceCond;
         this.jwtTokenManager = jwtTokenManager;
     }
 
@@ -39,7 +37,7 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
         String requestTokenHeader = request.getHeader("Authorization");
 
         if (Objects.nonNull(requestTokenHeader) && requestTokenHeader.startsWith("Bearer")){
-            jwtToken =requestTokenHeader.substring(7);
+            jwtToken = requestTokenHeader.substring(7);
 
             try{
                 username = jwtTokenManager.getUsernameFromToken(jwtToken);

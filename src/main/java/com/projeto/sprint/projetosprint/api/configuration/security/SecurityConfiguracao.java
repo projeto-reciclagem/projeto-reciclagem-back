@@ -1,5 +1,4 @@
 package com.projeto.sprint.projetosprint.api.configuration.security;
-import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCond;
 import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCoop;
 import jakarta.servlet.Filter;
 import lombok.AllArgsConstructor;
@@ -10,10 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,13 +32,9 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@AllArgsConstructor
-@NoArgsConstructor
 public class SecurityConfiguracao {
     private static final String ORIGENS_PERMITIDAS = "*";
 
-    @Autowired
-    private AutenticacaoServiceCond autenticacaoServiceCond;
 
     @Autowired
     private AutenticacaoServiceCoop autenticacaoServiceCoop;
@@ -57,7 +54,8 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/webjars/**"),
             new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/actuator/*"),
-            new AntPathRequestMatcher("/usuarios/login"),
+            new AntPathRequestMatcher("/condominios/login"),
+            new AntPathRequestMatcher("/cooperativas/login"),
             new AntPathRequestMatcher("/cooperativas", "POST"),
             new AntPathRequestMatcher("/condominios", "POST"),
             new AntPathRequestMatcher("/h2-console/**"),
@@ -66,7 +64,11 @@ public class SecurityConfiguracao {
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception {
-        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        http
+                .headers(headers ->
+headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorize -> {
                             authorize.requestMatchers(Arrays.toString(URLS_PERMITIDAS)).permitAll();
@@ -86,7 +88,7 @@ public class SecurityConfiguracao {
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
         authenticationManagerBuilder.authenticationProvider(new AutenticacaoProvider(
-                autenticacaoServiceCond, autenticacaoServiceCoop,passwordEnconder()
+                 autenticacaoServiceCoop,passwordEnconder()
                 ));
 
         return authenticationManagerBuilder.build();
@@ -127,6 +129,7 @@ public class SecurityConfiguracao {
                         HttpMethod.OPTIONS.name(),
                         HttpMethod.HEAD.name(),
                         HttpMethod.TRACE.name()));
+
         configuracao.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION));
 
         UrlBasedCorsConfigurationSource origem = new UrlBasedCorsConfigurationSource();
