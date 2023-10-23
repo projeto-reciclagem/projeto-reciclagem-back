@@ -1,7 +1,10 @@
 package com.projeto.sprint.projetosprint.controller;
 
 import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
+import com.projeto.sprint.projetosprint.domain.email.EmailBoasVindas;
+import com.projeto.sprint.projetosprint.domain.email.EmailConteudo;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
+import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +23,11 @@ import java.util.*;
 @RequestMapping("/cooperativas")
 public class CooperativaController {
     private CooperativaService service;
+    private EmailConteudoService emailService;
 
-    public CooperativaController(CooperativaService service) {
+    public CooperativaController(CooperativaService service, EmailConteudoService emailService) {
         this.service = service;
+        this.emailService = emailService;
     }
 
     //LISTA TODAS AS COOPERATIVAS
@@ -47,6 +52,18 @@ public class CooperativaController {
     public ResponseEntity<Cooperativa> cadastrarCooperativa(@RequestBody Cooperativa dados){
 
         Cooperativa cooperativaSalva = this.service.cadastrarCooperativa(dados);
+
+        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
+                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
+                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
+
+        EmailBoasVindas destinatario = new EmailBoasVindas(
+                dados.getNome(), dados.getEmail());
+
+        this.emailService.adicionarDestinatario(
+                idEmail, destinatario);
+
+        this.emailService.publicarEmail(idEmail);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -137,5 +154,12 @@ public class CooperativaController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/listar-email-cooperativa")
+    public ResponseEntity<List<EmailConteudo>> listarEmail(){
+        return ResponseEntity.ok(
+            this.emailService.listarEmail()
+        );
     }
 }
