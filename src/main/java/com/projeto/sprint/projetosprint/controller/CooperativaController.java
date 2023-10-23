@@ -82,7 +82,9 @@ public class CooperativaController {
         Boolean deuRuim = false; //VALIDA SE ALGO NÃO DEU CERTO
 
 
-        List<Cooperativa> lista = this.service.listarCooperativa();
+        List<Cooperativa> listaBanco = this.service.listarCooperativa();
+
+        ListaObj<Cooperativa> lista = (ListaObj<Cooperativa>) listaBanco;
 
         String dateStamp = LocalDateTime.now()
                 .toString()
@@ -103,12 +105,16 @@ public class CooperativaController {
 
         // GRAVANDO O ARQUIVO
         try{
-            for (Cooperativa c : lista){
+            saida.format("%S", "00cooperativa" + dateStamp);
+
+            for (int i = 0; i < lista.getTamanho(); i++){
+                Cooperativa c = lista.getElemento(i);
                 //GRAVANDO OS DADOS DA COOPERATIVA NO ARQUIVO
                 saida.format("%d;%s;%s;%s\n",
                         c.getId(), c.getNome(),c.getCnpj(),c.getEmail());
             }
 
+            saida.format("%d%010d", 01, lista.getTamanho());
         }
         catch (FormatterClosedException err){
             System.out.println("Erro ao gravar o arquivo");
