@@ -1,8 +1,10 @@
-package com.projeto.sprint.projetosprint.api.configuration.security;
+package com.projeto.sprint.projetosprint.api.configuration;
+import com.projeto.sprint.projetosprint.api.configuration.security.AutenticacaoEntryPoint;
+import com.projeto.sprint.projetosprint.api.configuration.security.AutenticacaoFilter;
+import com.projeto.sprint.projetosprint.api.configuration.security.AutenticacaoProvider;
+import com.projeto.sprint.projetosprint.api.configuration.security.GerenciadorTokenJwt;
 import com.projeto.sprint.projetosprint.service.usuario.autenticacao.AutenticacaoServiceCoop;
 import jakarta.servlet.Filter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +42,7 @@ public class SecurityConfiguracao {
     private AutenticacaoServiceCoop autenticacaoServiceCoop;
 
     @Autowired
-    private  AutenticacaoEntryPoint autenticacaoEntryPoint;
+    private AutenticacaoEntryPoint autenticacaoEntryPoint;
 
     private  final AntPathRequestMatcher[] URLS_PERMITIDAS = {
             new AntPathRequestMatcher("/swagger-ui/**"),
@@ -62,7 +64,7 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/error/**")
 
     };
-    @Bean
+
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception {
         http
                 .headers(headers ->
@@ -82,7 +84,7 @@ headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
         return http.build();
     }
 
-    @Bean
+        @Bean
     public AuthenticationManager authManager(HttpSecurity http)throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);

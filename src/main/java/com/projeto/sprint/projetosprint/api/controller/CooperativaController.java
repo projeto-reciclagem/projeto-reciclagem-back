@@ -54,7 +54,7 @@ public class CooperativaController {
     }
 
     //CADASTRA A COOPERATIVA
-    @PostMapping//("/cadastrar-cooperativa")
+    @PostMapping
     public ResponseEntity<Cooperativa> cadastrarCooperativa(@RequestBody Cooperativa dados){
 
         //VALIDAÇÕES DOS CAMPOS
