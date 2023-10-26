@@ -4,6 +4,7 @@ import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
+import com.projeto.sprint.projetosprint.util.ListaObj;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class CooperativaService {
         return this.repository.findAll();
     }
 
-    public Cooperativa buscaCoperativaId(Integer id){
+    public Cooperativa buscaCoperativaId(int id){
         return this.repository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
                         "Campo id inválido")
@@ -51,4 +52,10 @@ public class CooperativaService {
 
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
+
+    public List<Cooperativa> listarCooperativasGenerico(){
+        return this.repository.findAll();
+    }
+
+
 }

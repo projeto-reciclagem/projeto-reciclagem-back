@@ -15,7 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "Condominio")
 @EqualsAndHashCode(of = "id")
 public class Condominio {

@@ -6,15 +6,17 @@ import com.projeto.sprint.projetosprint.domain.email.EmailConteudo;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.util.FileCopyUtils;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -42,7 +44,7 @@ public class CooperativaController {
     }
 
     //BUSCA A COOPERATIVA POR ID
-    @GetMapping("/buscar-cooperativa-por-id/{id}")
+        @GetMapping("/buscar-cooperativa-por-id/{id}")
     public ResponseEntity<Cooperativa> buscarCooperativaPorId(@PathVariable int id){
         return ResponseEntity.ok(
                 this.service.buscaCoperativaId(id));
@@ -92,16 +94,18 @@ public class CooperativaController {
     }
 
     //GRAVANDO OS DADOS EM UM ARQUIVO CSV
-    @PostMapping("/exportar-dados-cooperativa")
-    public ResponseEntity<Void> gravaArquivoCsv(@RequestParam String nomeArq){
+    @PostMapping(value = "/exportar-dados-cooperativa/{nomeArq}", produces = "application/csv")
+    public ResponseEntity gravaArquivoCsv(@PathVariable String nomeArq) {
         FileWriter arq = null; //REPRESENTA O ARQUIVO QUE SERÁ GRAVADO
         Formatter saida = null; //SERÁ USADO PARA ESCREVER NO ARQUIVO
         Boolean deuRuim = false; //VALIDA SE ALGO NÃO DEU CERTO
 
+        List<Cooperativa> cooperativas = this.service.listarCooperativasGenerico();
+        ListaObj<Cooperativa> lista = new ListaObj(cooperativas.size());
 
-        List<Cooperativa> listaBanco = this.service.listarCooperativa();
-
-        ListaObj<Cooperativa> lista = (ListaObj<Cooperativa>) listaBanco;
+        for (Cooperativa c : cooperativas){
+            lista.adiciona(c);
+        }
 
         String dateStamp = LocalDateTime.now()
                 .toString()
@@ -122,16 +126,12 @@ public class CooperativaController {
 
         // GRAVANDO O ARQUIVO
         try{
-            saida.format("%S", "00cooperativa" + dateStamp);
-
             for (int i = 0; i < lista.getTamanho(); i++){
                 Cooperativa c = lista.getElemento(i);
                 //GRAVANDO OS DADOS DA COOPERATIVA NO ARQUIVO
                 saida.format("%d;%s;%s;%s\n",
                         c.getId(), c.getNome(),c.getCnpj(),c.getEmail());
             }
-
-            saida.format("%d%010d", 01, lista.getTamanho());
         }
         catch (FormatterClosedException err){
             System.out.println("Erro ao gravar o arquivo");
@@ -152,8 +152,7 @@ public class CooperativaController {
                 System.exit(1);
             }
         }
-
-        return ResponseEntity.noContent().build();
+            return ResponseEntity.status(200).header("content-disposition", String.format("attachment; filename=\"%s\"", nomeArq)).body(nomeArq);
     }
 
     @GetMapping("/listar-email-cooperativa")

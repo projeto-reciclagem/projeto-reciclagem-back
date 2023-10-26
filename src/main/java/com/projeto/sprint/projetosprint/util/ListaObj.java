@@ -1,5 +1,7 @@
 package com.projeto.sprint.projetosprint.util;
 
+import java.util.List;
+
 public class ListaObj <T>{
 
 
@@ -14,7 +16,6 @@ public class ListaObj <T>{
     public void adiciona(T valor){
         vetor[nroElem] = valor;
         nroElem++;
-
     }
 
     public void exibe(){
