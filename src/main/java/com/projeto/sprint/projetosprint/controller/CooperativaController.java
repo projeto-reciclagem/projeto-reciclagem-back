@@ -3,15 +3,16 @@ package com.projeto.sprint.projetosprint.controller;
 import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.email.EmailBoasVindas;
 import com.projeto.sprint.projetosprint.domain.email.EmailConteudo;
+import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
+import com.projeto.sprint.projetosprint.dto.cooperativa.CooperativaMaterialDto;
+import com.projeto.sprint.projetosprint.dto.cooperativa.mapper.CooperativaMapper;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
-import com.projeto.sprint.projetosprint.util.ListaObj;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -19,15 +20,36 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/cooperativas")
 public class CooperativaController {
+
+    private final CooperativaRepository cooperativaRepository;
+
     private CooperativaService service;
     private EmailConteudoService emailService;
 
-    public CooperativaController(CooperativaService service, EmailConteudoService emailService) {
+    public CooperativaController(CooperativaRepository cooperativaRepository, CooperativaService service, EmailConteudoService emailService) {
+        this.cooperativaRepository = cooperativaRepository;
         this.service = service;
         this.emailService = emailService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CooperativaMaterialDto>> findAll(){
+        List<Cooperativa> all = cooperativaRepository.findAll();
+
+        if (all.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        List<CooperativaMaterialDto> cooperativaDto = all.stream()
+                .map(CooperativaMapper::mapCooperativaMaterialDto)
+                .toList();
+
+        return ResponseEntity.ok(cooperativaDto);
     }
 
     //LISTA TODAS AS COOPERATIVAS
