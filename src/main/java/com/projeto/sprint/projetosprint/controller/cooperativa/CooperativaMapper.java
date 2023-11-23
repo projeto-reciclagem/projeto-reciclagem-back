@@ -20,7 +20,10 @@ public class CooperativaMapper {
         cooperativaResponseDTO.setId(cooperativa.getId());
         cooperativaResponseDTO.setNome(cooperativa.getNome());
         cooperativaResponseDTO.setCnpj(cooperativa.getCnpj());
-        cooperativaResponseDTO.setEmail(cooperativa.getUsuario().getEmail());
+        
+        if (cooperativa.getUsuario() != null){
+            cooperativaResponseDTO.setEmail(cooperativa.getUsuario().getEmail());
+        }
 
         return cooperativaResponseDTO;
     }

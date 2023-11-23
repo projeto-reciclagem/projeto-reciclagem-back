@@ -29,8 +29,6 @@ public class AgendaController {
     // Criar um novo agendamento
     @PostMapping("/cadastrar")
     public ResponseEntity<Agenda> cadastrarAgendaColeta(@Valid @RequestBody Agenda dados) {
-
-        dados.setDataAgendamento(LocalDateTime.now());
         // Salva o registro no banco de dados usando o repositório
         return ResponseEntity.status(201).body(
                 this.service.cadastrarAgenda(dados));

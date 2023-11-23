@@ -1,5 +1,10 @@
 package com.projeto.sprint.projetosprint.domain.entity.endereco;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Endereco {
 
     private Integer idEndereco;

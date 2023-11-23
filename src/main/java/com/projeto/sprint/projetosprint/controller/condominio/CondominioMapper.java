@@ -22,11 +22,13 @@ public class CondominioMapper {
         condominioResponseDTO.setId(condominio.getId());
         condominioResponseDTO.setNome(condominio.getNome());
         condominioResponseDTO.setCnpj(condominio.getCnpj());
-        condominioResponseDTO.setEmail(condominio.getUsuario().getEmail());
-
         condominioResponseDTO.setQtdMoradores(condominio.getQtdMoradores());
         condominioResponseDTO.setQtdMoradias(condominio.getQtdMoradias());
         condominioResponseDTO.setQtdBag(condominio.getQtdBag());
+
+        if (condominio.getUsuario() != null){
+            condominioResponseDTO.setEmail(condominio.getUsuario().getEmail());
+        }
 
         return condominioResponseDTO;
     }
