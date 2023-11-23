@@ -1,24 +1,38 @@
 package com.projeto.sprint.projetosprint.service.cooperativa;
 
-import com.projeto.sprint.projetosprint.domain.cooperativa.Cooperativa;
+import com.projeto.sprint.projetosprint.controller.cooperativa.CooperativaMapper;
+import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
+import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
+import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
+import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
+import com.projeto.sprint.projetosprint.domain.entity.usuario.TipoUsuario;
+import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
 import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
-import com.projeto.sprint.projetosprint.util.ListaObj;
+import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
+import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CooperativaService {
     private final CooperativaRepository repository;
+    private final UsuarioService usuarioService;
+    private EmailConteudoService emailService;
 
-    public CooperativaService(CooperativaRepository repository) {
+
+    public CooperativaService(CooperativaRepository repository, UsuarioService usuarioService, EmailConteudoService emailService) {
         this.repository = repository;
+        this.usuarioService = usuarioService;
+        this.emailService = emailService;
     }
 
-    public List<Cooperativa> listarCooperativa(){
-        return this.repository.findAll();
+    public List<CooperativaResponseDTO> listarCooperativa(){
+        return this.repository.findAll().stream().map(CooperativaMapper :: of).toList();
     }
 
     public Cooperativa buscaCoperativaId(int id){
@@ -28,17 +42,33 @@ public class CooperativaService {
         );
     }
 
-    public Cooperativa cadastrarCooperativa(Cooperativa dados){
+    public Cooperativa cadastrarCooperativa(CooperativaCriacaoDTO dados){
 
-        if(this.repository.existsByEmail(dados.getEmail())){
-            throw new EntidadeDuplicadaException("Email já cadastrado");
-        }
+        Usuario usuario = usuarioService.cadastrar(dados.getUsuario());
+        usuario.setTipoUsuario(TipoUsuario.COOPERATIVA);
 
-        return this.repository.save(dados);
+        Cooperativa cooperativa = CooperativaMapper.of(dados);
+        cooperativa.setUsuario(usuario);
+
+        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
+                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
+                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
+
+        EmailBoasVindas destinatario = new EmailBoasVindas(
+                dados.getNome(), dados.getUsuario().email());
+
+        this.emailService.adicionarDestinatario(
+                idEmail, destinatario);
+
+        this.emailService.publicarEmail(idEmail);
+
+        return this.repository.save(cooperativa);
     }
 
-    public Cooperativa atualizarCooperativa(Cooperativa dados){
-        if(this.repository.existsById(dados.getId())){
+    public Cooperativa atualizarCooperativa(Cooperativa dados, Integer id){
+
+        if(this.repository.existsById(id)){
+            dados.setId(id);
             return this.repository.save(dados);
         }
 

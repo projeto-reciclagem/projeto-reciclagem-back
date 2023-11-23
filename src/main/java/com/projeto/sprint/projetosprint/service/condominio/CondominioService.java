@@ -1,13 +1,23 @@
 package com.projeto.sprint.projetosprint.service.condominio;
 
-import com.projeto.sprint.projetosprint.domain.condominio.Condominio;
+import com.projeto.sprint.projetosprint.controller.condominio.CondominioMapper;
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
+import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
+import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
+import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
+import com.projeto.sprint.projetosprint.domain.entity.usuario.TipoUsuario;
+import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
 import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
+import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
+import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CondominioService {
@@ -15,8 +25,17 @@ public class CondominioService {
     @Autowired
     private CondominioRepository repository;
 
-    public List<Condominio> listarCondominio(){
-        return this.repository.findAll();
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private EmailConteudoService emailService;
+
+    public List<CondominioResponseDTO> listarCondominio(){
+        return this.repository
+                .findAll()
+                .stream()
+                .map(CondominioMapper:: of).toList();
     }
 
     public Condominio buscaCondominioId(Integer id){
@@ -26,18 +45,40 @@ public class CondominioService {
         );
     }
 
-    public Condominio cadastrarCondominio(Condominio dados) {
+    public Condominio cadastrarCondominio(CondominioCriacaoDTO dados) {
 
-        if(this.repository.existsByEmail(dados.getEmail())){
+        if(this.usuarioService.validarEmail(dados.getUsuario().email())){
             throw new EntidadeDuplicadaException("Email já cadastrado");
         }
 
-        return this.repository.save(dados);
+        Usuario usuario = usuarioService.cadastrar(dados.getUsuario());
+        usuario.setTipoUsuario(TipoUsuario.CONDOMINIO);
+
+        Condominio condominio = CondominioMapper.of(dados);
+        condominio.setUsuario(usuario);
+
+        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
+                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
+                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
+
+        EmailBoasVindas destinatario = new EmailBoasVindas(
+                dados.getNome(), dados.getUsuario().email());
+
+        this.emailService.adicionarDestinatario(
+                idEmail, destinatario);
+        this.emailService.publicarEmail(idEmail);
+
+
+        return this.repository.save(condominio);
     }
 
-    public Condominio atualizarCondominio(Condominio dados){
-        if(this.repository.existsById(dados.getId())){
-            return this.repository.save(dados);
+    public Condominio atualizarCondominio(CondominioCriacaoDTO dados, int id){
+
+        if(this.repository.existsById(id)){
+            Condominio condominio = CondominioMapper.of(dados);
+            condominio.setId(id);
+
+            return this.repository.save(condominio);
         }
 
         throw new EntidadeNaoEncontradaException("Campo id inválido");

@@ -1,12 +1,13 @@
 package com.projeto.sprint.projetosprint.service.material;
 
-import com.projeto.sprint.projetosprint.domain.material.Material;
+import com.projeto.sprint.projetosprint.controller.material.MaterialMapper;
+import com.projeto.sprint.projetosprint.controller.material.dto.MaterialCriacaoDTO;
+import com.projeto.sprint.projetosprint.domain.entity.material.Material;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MaterialService {
@@ -22,8 +23,8 @@ public class MaterialService {
         return this.repository.findAll();
     }
 
-    public Material cadastrarMaterial(Material dados){
-        return this.repository.save(dados);
+    public Material cadastrarMaterial(MaterialCriacaoDTO dados){
+        return this.repository.save(MaterialMapper.of(dados));
     }
 
     public Material bucarMaterial(int id) {
@@ -33,11 +34,12 @@ public class MaterialService {
         );
     }
 
-    public Material atualizarMaterial (Material dados){
+    public Material atualizarMaterial (MaterialCriacaoDTO dados, int id){
 
-        if(repository.existsById(dados.getIdMaterial())){
-            this.repository.save(dados);
-            return dados;
+        Material material = MaterialMapper.of(dados);
+        if (repository.existsById(id)) {
+            material.setId(id);
+            return this.repository.save(material);
         }
 
         throw new EntidadeNaoEncontradaException("Campo id inválido");

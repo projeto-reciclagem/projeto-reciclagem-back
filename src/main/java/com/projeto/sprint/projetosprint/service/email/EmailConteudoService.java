@@ -1,7 +1,7 @@
 package com.projeto.sprint.projetosprint.service.email;
 
-import com.projeto.sprint.projetosprint.domain.email.EmailConteudo;
-import com.projeto.sprint.projetosprint.domain.email.observer.Destinatario;
+import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
+import com.projeto.sprint.projetosprint.domain.entity.email.observer.Destinatario;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

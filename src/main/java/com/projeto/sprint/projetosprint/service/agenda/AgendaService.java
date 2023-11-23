@@ -1,6 +1,6 @@
 package com.projeto.sprint.projetosprint.service.agenda;
 
-import com.projeto.sprint.projetosprint.domain.agenda.Agenda;
+import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import org.springframework.stereotype.Service;
