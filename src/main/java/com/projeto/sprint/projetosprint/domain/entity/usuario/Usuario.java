@@ -1,9 +1,7 @@
 package com.projeto.sprint.projetosprint.domain.entity.usuario;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,4 +22,8 @@ public class Usuario {
     private String imgUsuario;
 
     private TipoUsuario tipoUsuario;
+
+    @OneToOne
+    @JoinColumn(name = "fk_endereco")
+    private Endereco endereco;
 }

@@ -8,4 +8,6 @@ public class CooperativaResponseDTO {
     private String nome;
     private String email;
     private String cnpj;
+
+
 }

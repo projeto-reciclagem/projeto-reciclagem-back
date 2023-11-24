@@ -17,7 +17,7 @@ public class Cooperativa {
     private String cnpj;
 
     @OneToOne
-        @JoinColumn(name = "fk_usuario")
+    @JoinColumn(name = "fk_usuario")
     private Usuario Usuario;
 
 }

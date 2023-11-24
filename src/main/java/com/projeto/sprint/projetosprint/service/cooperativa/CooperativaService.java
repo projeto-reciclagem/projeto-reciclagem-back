@@ -3,6 +3,7 @@ package com.projeto.sprint.projetosprint.service.cooperativa;
 import com.projeto.sprint.projetosprint.controller.cooperativa.CooperativaMapper;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
+import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
@@ -44,7 +45,9 @@ public class CooperativaService {
 
     public Cooperativa cadastrarCooperativa(CooperativaCriacaoDTO dados){
 
-        Usuario usuario = usuarioService.cadastrar(dados.getUsuario());
+        UsuarioCriacaoDTO usuarioCriacaoDTO = new UsuarioCriacaoDTO(dados.email, dados.senha);
+
+;        Usuario usuario = usuarioService.cadastrar(usuarioCriacaoDTO);
         usuario.setTipoUsuario(TipoUsuario.COOPERATIVA);
 
         Cooperativa cooperativa = CooperativaMapper.of(dados);
@@ -55,7 +58,7 @@ public class CooperativaService {
                 "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
 
         EmailBoasVindas destinatario = new EmailBoasVindas(
-                dados.getNome(), dados.getUsuario().email());
+                dados.getNome(), dados.email);
 
         this.emailService.adicionarDestinatario(
                 idEmail, destinatario);

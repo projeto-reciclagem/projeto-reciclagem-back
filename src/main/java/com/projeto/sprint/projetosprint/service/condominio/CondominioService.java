@@ -3,6 +3,7 @@ package com.projeto.sprint.projetosprint.service.condominio;
 import com.projeto.sprint.projetosprint.controller.condominio.CondominioMapper;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
+import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
@@ -47,11 +48,13 @@ public class CondominioService {
 
     public Condominio cadastrarCondominio(CondominioCriacaoDTO dados) {
 
-        if(this.usuarioService.validarEmail(dados.getUsuario().email())){
+        UsuarioCriacaoDTO usuarioCriacaoDTO  = new UsuarioCriacaoDTO(dados.email, dados.senha);
+
+        if(this.usuarioService.validarEmail(usuarioCriacaoDTO.email())){
             throw new EntidadeDuplicadaException("Email já cadastrado");
         }
 
-        Usuario usuario = usuarioService.cadastrar(dados.getUsuario());
+        Usuario usuario = usuarioService.cadastrar(usuarioCriacaoDTO);
         usuario.setTipoUsuario(TipoUsuario.CONDOMINIO);
 
         Condominio condominio = CondominioMapper.of(dados);
@@ -62,7 +65,7 @@ public class CondominioService {
                 "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
 
         EmailBoasVindas destinatario = new EmailBoasVindas(
-                dados.getNome(), dados.getUsuario().email());
+                dados.getNome(), dados.email);
 
         this.emailService.adicionarDestinatario(
                 idEmail, destinatario);
