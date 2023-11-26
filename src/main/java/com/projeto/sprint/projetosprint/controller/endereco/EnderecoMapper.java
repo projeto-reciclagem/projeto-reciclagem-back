@@ -7,6 +7,7 @@ public class EnderecoMapper {
     public static Endereco of(EnderecoCriacaoDTO enderecoCriacaoDTO){
         Endereco endereco = new Endereco();
 
+        endereco.setId(enderecoCriacaoDTO.getId());
         endereco.setCep(enderecoCriacaoDTO.getCep());
         endereco.setLogradouro(enderecoCriacaoDTO.getLogradouro());
         endereco.setBairro(enderecoCriacaoDTO.getBairro());
@@ -14,5 +15,19 @@ public class EnderecoMapper {
         endereco.setComplemento(enderecoCriacaoDTO.getComplemento());
 
         return endereco;
+    }
+
+    public static EnderecoCriacaoDTO of(Endereco endereco){
+        EnderecoCriacaoDTO enderecoDTO = new EnderecoCriacaoDTO();
+
+
+        enderecoDTO.setId(endereco.getId());
+        enderecoDTO.setCep(endereco.getCep());
+        enderecoDTO.setLogradouro(endereco.getLogradouro());
+        enderecoDTO.setBairro(endereco.getBairro());
+        enderecoDTO.setCidade(endereco.getCidade());
+        enderecoDTO.setComplemento(endereco.getComplemento());
+
+        return enderecoDTO;
     }
 }

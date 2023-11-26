@@ -57,4 +57,22 @@ public class UsuarioService {
     public Boolean validarEmail(String email){
         return repository.existsByEmail(email);
     }
+
+    public Usuario buscarUsuarioId(Long id){
+        if (this.repository.existsById(id)){
+            return this.repository.findById(id).get();
+        }
+        return null;
+    }
+
+    public void atualizarUsuario(Usuario usuario){
+
+        this.repository.atualizarInfo(
+                usuario.getEmail(),
+                passwordEncoder.encode(usuario.getSenha()),
+                usuario.getEndereco(),
+                usuario.getImgUsuario(),
+                usuario.getId()
+        );
+    }
 }

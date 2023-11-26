@@ -1,5 +1,6 @@
 package com.projeto.sprint.projetosprint.controller.condominio;
 
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioAtualizarDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
@@ -58,7 +59,7 @@ public class CondominioController {
     //Atualizar os dados do condominio
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<CondominioResponseDTO> condominio(@PathVariable int id,
-                                                @Valid @RequestBody CondominioCriacaoDTO dados){
+                                                @Valid @RequestBody CondominioAtualizarDTO dados){
 
         Condominio condominio = this.service.atualizarCondominio(dados, id);
         return ResponseEntity.ok(CondominioMapper.of(condominio));

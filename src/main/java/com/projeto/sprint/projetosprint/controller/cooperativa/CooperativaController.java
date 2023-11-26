@@ -1,5 +1,6 @@
 package com.projeto.sprint.projetosprint.controller.cooperativa;
 
+import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaAtualizarDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
@@ -58,11 +59,11 @@ public class CooperativaController {
     }
 
     //ATUALIZANDO INFORMAÇÕES DA COOPERATIVA
-    @PatchMapping("/atualizar/{id}")
+    @PutMapping("/atualizar/{id}")
     public ResponseEntity<Void> atualizarCooperativa(@PathVariable int id,
-                                                    @Valid @RequestBody CooperativaCriacaoDTO dados){
-        Cooperativa cooperativa = CooperativaMapper.of(dados);
-        this.service.atualizarCooperativa(cooperativa, id);
+                                                     @Valid @RequestBody CooperativaAtualizarDTO dados){
+
+        this.service.atualizarCooperativa(dados, id);
         return ResponseEntity.noContent().build();
     }
 

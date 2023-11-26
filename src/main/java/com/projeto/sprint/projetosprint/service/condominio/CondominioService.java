@@ -1,18 +1,24 @@
 package com.projeto.sprint.projetosprint.service.condominio;
 
 import com.projeto.sprint.projetosprint.controller.condominio.CondominioMapper;
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioAtualizarDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
+import com.projeto.sprint.projetosprint.controller.cooperativa.CooperativaMapper;
+import com.projeto.sprint.projetosprint.controller.endereco.EnderecoMapper;
 import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
+import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
+import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.TipoUsuario;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
 import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
+import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +37,10 @@ public class CondominioService {
 
     @Autowired
     private EmailConteudoService emailService;
+
+    @Autowired
+    private  EnderecoService enderecoService;
+
 
     public List<CondominioResponseDTO> listarCondominio(){
         return this.repository
@@ -75,11 +85,34 @@ public class CondominioService {
         return this.repository.save(condominio);
     }
 
-    public Condominio atualizarCondominio(CondominioCriacaoDTO dados, int id){
+    public Condominio atualizarCondominio(CondominioAtualizarDTO dados, int id){
+
+        Condominio infoCondominio, condominio;
+        Usuario usuario, infoUsuario;
 
         if(this.repository.existsById(id)){
-            Condominio condominio = CondominioMapper.of(dados);
+            infoCondominio = this.buscaCondominioId(id);
+
+            condominio = CondominioMapper.of(dados);
             condominio.setId(id);
+
+            usuario = condominio.getUsuario();
+            usuario.setId(infoCondominio.getUsuario().getId());
+            infoUsuario = this.usuarioService.buscarUsuarioId(usuario.getId());
+
+            if (infoUsuario.getEndereco() != null){
+                usuario.getEndereco().setId(
+                        infoUsuario.getEndereco().getId()
+                );
+            }
+
+            usuario.setEndereco(
+                    this.enderecoService.cadastrarEndereco(
+                            EnderecoMapper.of(usuario.getEndereco()))
+            );
+
+            this.usuarioService.atualizarUsuario(usuario);
+            condominio.setUsuario(usuario);
 
             return this.repository.save(condominio);
         }

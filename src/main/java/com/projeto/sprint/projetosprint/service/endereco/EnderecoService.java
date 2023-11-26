@@ -22,7 +22,7 @@ public class EnderecoService {
         Endereco endereco = EnderecoMapper.of(enderecoDTO);
 
         Optional<ApiCepAberto.Cep> cepOpt = apiCep.searchByCep(endereco.getCep());
-        if (cepOpt.isPresent()) throw new EntidadeNaoEncontradaException("O CEP está inválido");
+        if (cepOpt.isEmpty()) throw new EntidadeNaoEncontradaException("O CEP está inválido");
 
         ApiCepAberto.Cep info = cepOpt.get();
         endereco.setLongitude(info.getLongitude());
@@ -30,26 +30,4 @@ public class EnderecoService {
 
         return this.repository.save(endereco);
     }
-
-    public Endereco atualizarEndereco(EnderecoCriacaoDTO enderecoDTO, int id){
-
-        Endereco endereco = EnderecoMapper.of(enderecoDTO);
-        endereco.setId(id);
-
-        Optional<ApiCepAberto.Cep> cepOpt = apiCep.searchByCep(endereco.getCep());
-        if (cepOpt.isPresent()){
-            throw new EntidadeNaoEncontradaException("O CEP está inválido");
-        }
-
-        if (this.repository.existsById(id)){
-            ApiCepAberto.Cep info = cepOpt.get();
-            endereco.setLongitude(info.getLongitude());
-            endereco.setLongitude(info.getLatitude());
-
-            return this.repository.save(endereco);
-        }
-
-        throw new EntidadeNaoEncontradaException("O campo id está inválido");
-    }
-
 }
