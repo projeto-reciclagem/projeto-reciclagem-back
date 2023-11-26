@@ -29,7 +29,8 @@ public class AgendaMapper {
         Condominio condominio = new Condominio();
 
         agenda.setDatRetirada(agendaDTO.getDatRetirada());
-
+        agenda.setQtBag(agendaDTO.getQtBag());
+        agenda.setStatus(agendaDTO.getStatus());
         cooperativa.setId(agendaDTO.getFkCooperativa());
         condominio.setId(agendaDTO.getFkCondominio());
 
