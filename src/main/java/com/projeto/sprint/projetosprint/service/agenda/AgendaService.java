@@ -68,5 +68,19 @@ public class AgendaService {
         return this.repository.findByDatRetirada(data, endData);
     }
 
+    public Integer coletasUltimasSemanas(int idCooperativa){
+        LocalDateTime datAtual = LocalDateTime.now();
+        LocalDateTime datSemanaPassada = datAtual.minusWeeks(1);
+
+        return this.repository.contagemAgendamentoUltimaSemana(idCooperativa, datSemanaPassada, datAtual);
+    }
+
+    public Integer condominiosAtendidosUltimaSemana(int idCooperativa){
+        LocalDateTime datAtual = LocalDateTime.now();
+        LocalDateTime datSemanaPassada = datAtual.minusWeeks(1);
+
+        return this.repository.condominiosAtendidosUltimaSemana(idCooperativa, datSemanaPassada, datAtual);
+
+    }
 
 }

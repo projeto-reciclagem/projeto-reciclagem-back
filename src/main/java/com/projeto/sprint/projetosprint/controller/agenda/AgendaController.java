@@ -63,4 +63,17 @@ public class AgendaController {
         );
     }
 
+    @GetMapping("/coletas/ultima-semana/{id}")
+    public ResponseEntity<Integer> coletasUltimasSemanas(@PathVariable int id){
+        return ResponseEntity.ok(
+          this.service.coletasUltimasSemanas(id)
+        );
+    }
+
+    @GetMapping("/atendimentos/ultima-semana/{id}")
+    public ResponseEntity<Integer> condominiosAtendidosUltimaSemana(@PathVariable int id){
+        return ResponseEntity.ok(
+                this.service.condominiosAtendidosUltimaSemana(id)
+        );
+    }
 }
