@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class AgendaController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Agenda>> listarAgendamentos() {
+    public ResponseEntity<List<AgendaResponseDTO>> listarAgendamentos() {
         return ResponseEntity.ok(
                 this.service.listarAgendamentos());
     }
@@ -50,6 +51,16 @@ public class AgendaController {
     public ResponseEntity<Void> excluirAgendamento(@PathVariable int id) {
         this.service.excluirAgendamento(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/buscar/data")
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data){
+        LocalDateTime dataConsulta = data.atStartOfDay();
+
+        List<Agenda> agendamentos = this.service.buscarPorData(dataConsulta);
+        return ResponseEntity.ok(
+                agendamentos.stream().map(AgendaMapper :: of).toList()
+        );
     }
 
 }
