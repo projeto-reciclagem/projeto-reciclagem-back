@@ -9,5 +9,9 @@ public class CooperativaResponseDTO {
     private String email;
     private String cnpj;
 
-
+    private String cep;
+    private String logradouro;
+    private String bairro;
+    private String cidade;
+    private String complemento;
 }

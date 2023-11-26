@@ -1,6 +1,8 @@
 package com.projeto.sprint.projetosprint.controller.agenda;
 
 
+import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import jakarta.validation.Valid;
@@ -28,10 +30,11 @@ public class AgendaController {
 
     // Criar um novo agendamento
     @PostMapping("/cadastrar")
-    public ResponseEntity<Agenda> cadastrarAgendaColeta(@Valid @RequestBody Agenda dados) {
-        // Salva o registro no banco de dados usando o repositório
+    public ResponseEntity<AgendaResponseDTO> cadastrarAgendaColeta(@Valid @RequestBody AgendaCriacaoDTO dados) {
         return ResponseEntity.status(201).body(
-                this.service.cadastrarAgenda(dados));
+                AgendaMapper.of(
+                    this.service.cadastrarAgenda(dados)
+                ));
     }
 
     // Atualizar um agendamento existente

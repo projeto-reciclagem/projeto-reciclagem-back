@@ -25,7 +25,17 @@ public class CooperativaMapper {
         cooperativaResponseDTO.setCnpj(cooperativa.getCnpj());
 
         if (cooperativa.getUsuario() != null){
-            cooperativaResponseDTO.setEmail(cooperativa.getUsuario().getEmail());
+            Usuario usuario = cooperativa.getUsuario();
+            cooperativaResponseDTO.setEmail(usuario.getEmail());
+
+            if(usuario.getEndereco() != null){
+                Endereco endereco = usuario.getEndereco();
+                cooperativaResponseDTO.setCep(endereco.getCep());
+                cooperativaResponseDTO.setLogradouro(endereco.getLogradouro());
+                cooperativaResponseDTO.setBairro(endereco.getBairro());
+                cooperativaResponseDTO.setCidade(endereco.getCidade());
+                cooperativaResponseDTO.setComplemento(endereco.getComplemento());
+            }
         }
 
         return cooperativaResponseDTO;

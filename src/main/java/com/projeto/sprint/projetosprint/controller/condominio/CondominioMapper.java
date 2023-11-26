@@ -30,7 +30,17 @@ public class CondominioMapper {
         condominioResponseDTO.setQtdBag(condominio.getQtdBag());
 
         if (condominio.getUsuario() != null){
-            condominioResponseDTO.setEmail(condominio.getUsuario().getEmail());
+            Usuario usuario = condominio.getUsuario();
+            condominioResponseDTO.setEmail(usuario.getEmail());
+
+            if (usuario.getEndereco() != null){
+                Endereco endereco = condominio.getUsuario().getEndereco();
+                condominioResponseDTO.setCep(endereco.getCep());
+                condominioResponseDTO.setLogradouro(endereco.getLogradouro());
+                condominioResponseDTO.setBairro(endereco.getBairro());
+                condominioResponseDTO.setCidade(endereco.getCidade());
+                condominioResponseDTO.setComplemento(endereco.getComplemento());
+            }
         }
 
         return condominioResponseDTO;

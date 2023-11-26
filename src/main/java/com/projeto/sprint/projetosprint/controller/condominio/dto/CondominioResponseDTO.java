@@ -11,4 +11,10 @@ public class CondominioResponseDTO {
     private Integer qtdMoradores;
     private Integer qtdMoradias;
     private Integer qtdBag;
+
+    private String cep;
+    private String logradouro;
+    private String bairro;
+    private String cidade;
+    private String complemento;
 }

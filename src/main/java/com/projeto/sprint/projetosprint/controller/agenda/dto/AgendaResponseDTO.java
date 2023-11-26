@@ -1,5 +1,7 @@
 package com.projeto.sprint.projetosprint.controller.agenda.dto;
 
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
+import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
@@ -21,6 +23,6 @@ public class AgendaResponseDTO {
     private Integer qtBag;
     private Status status;
 
-    private Cooperativa cooperativa;
-    private Condominio condominio;
+    private CooperativaResponseDTO cooperativa;
+    private CondominioResponseDTO condominio;
 }

@@ -11,16 +11,16 @@ import java.time.LocalDateTime;
 
 @Data
 public class AgendaCriacaoDTO {
-    @FutureOrPresent
-    private LocalDateTime datAgendamento;
-    @FutureOrPresent
+
     private LocalDateTime datRetirada;
 
     @Positive
     private Integer qtBag;
+
     private Status status;
+
     @Positive
-    private Integer fkcooperativa;
+    private Integer fkCooperativa;
     @Positive
     private Integer fkCondominio;
 }
