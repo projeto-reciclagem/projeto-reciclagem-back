@@ -92,5 +92,8 @@ public class AgendaService {
         return null;
     }
 
+    public Agenda buscarAgendaPorId(int id){
+        return this.repository.findById(id).get();
+    }
 
 }
