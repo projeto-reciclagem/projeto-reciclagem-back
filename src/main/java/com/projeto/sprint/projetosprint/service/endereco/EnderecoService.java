@@ -25,8 +25,8 @@ public class EnderecoService {
         if (cepOpt.isEmpty()) throw new EntidadeNaoEncontradaException("O CEP está inválido");
 
         ApiCepAberto.Cep info = cepOpt.get();
-        endereco.setLongitude(info.getLongitude());
-        endereco.setLongitude(info.getLatitude());
+        endereco.setLongitude(String.valueOf(info.getLongitude()));
+        endereco.setLatitude(String.valueOf(info.getLatitude()));
 
         return this.repository.save(endereco);
     }

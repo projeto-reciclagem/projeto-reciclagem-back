@@ -19,7 +19,7 @@ public class ApiCepAberto {
     public Optional<Cep> searchByCep(@NonNull String cep) {
         return cepFromRequest(new Request.Builder()
                 .url(String.format("https://www.cepaberto.com/api/v3/cep?cep=%s", cep))
-                .addHeader("Authorization", "Token token=292ce57ef419baa933cd17abac7d0d48")
+                .addHeader("Authorization", "Token token=37e4ce5b03558dab54ad5728180117c0")
                 .build()
         );
     }
