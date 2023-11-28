@@ -5,18 +5,23 @@ import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaRe
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
+import com.projeto.sprint.projetosprint.domain.entity.material.Material;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
+import com.projeto.sprint.projetosprint.service.material.MaterialService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
 import com.projeto.sprint.projetosprint.util.OrdenacaoCnpj;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.*;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -25,8 +30,11 @@ import java.util.*;
 public class CooperativaController {
     private CooperativaService service;
 
-    public CooperativaController(CooperativaService service) {
+    private MaterialService serviceMaterial;
+
+    public CooperativaController(CooperativaService service, MaterialService serviceMaterial) {
         this.service = service;
+        this.serviceMaterial = serviceMaterial;
     }
 
     //LISTA TODAS AS COOPERATIVAS
@@ -135,6 +143,52 @@ public class CooperativaController {
             }
         }
             return ResponseEntity.status(200).header("content-disposition", String.format("attachment; filename=\"%s\"", nomeArq)).body(nomeArq);
+    }
+
+    @GetMapping("/download-txt/{id}")
+    public ResponseEntity<byte[]>downloadTxT(@PathVariable Integer id){
+        Cooperativa cooperativa = service.buscaCoperativaId(id);
+
+        try{
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+             String header = "00COOPERATIVA";
+             header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+
+             outputStreamWriter.write(header+"\n");
+
+             String corpo = "02";
+             corpo += String.format("%-25.25s", cooperativa.getNome());
+             corpo += String.format("%-16.16s", cooperativa.getCnpj());
+             corpo += String.format("%-30.30s", cooperativa.getUsuario().getEmail());
+
+             outputStreamWriter.write(corpo+"\n");
+             for (Material m : cooperativa.getMateriais()) {
+                 String corpo2 = "03";
+                 corpo2 += String.format("%-17.17s",m.getNome());
+                 corpo2 += String.format("%3.1f",m.getValorKg());
+
+                 outputStreamWriter.write(corpo2+"\n");
+             }
+             String trailer = "01";
+             trailer += String.format("%10d",cooperativa.getMateriais().size()+1);
+
+             outputStreamWriter.write(trailer);
+             outputStreamWriter.close();
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("content-disposition","attachament; filename=Registro-de-Coleta.txt");
+            httpHeaders.add("content-type","text/csv; charset=UTF-8");
+            return ResponseEntity.status(200).headers(httpHeaders).body(byteArrayOutputStream.toByteArray());
+    }
+        catch (IOException erro){
+            throw  new RuntimeException(erro);
+        }
+    }
+
+     @PostMapping("/upload/{id}")
+    public ResponseEntity<List<Material>> uploadTxt(@RequestParam MultipartFile file, @PathVariable Integer id){
+         List materiais = this.serviceMaterial.uploadTxT(file,id);
+        return ResponseEntity.ok(materiais);
     }
 
     /*@GetMapping("/listar-email-cooperativa")

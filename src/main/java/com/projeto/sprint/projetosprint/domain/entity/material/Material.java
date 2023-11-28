@@ -23,7 +23,7 @@ public class Material {
     private Double valorKg;
 
     @ManyToOne
-    private Cooperativa Cooperativa;
+    private Cooperativa cooperativa;
 }
 
 
