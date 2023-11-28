@@ -18,24 +18,20 @@ import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CooperativaService {
     private final CooperativaRepository repository;
     private final UsuarioService usuarioService;
     private final EnderecoService enderecoService;
-    private EmailConteudoService emailService;
+    private final EmailConteudoService emailService;
 
-    public CooperativaService(CooperativaRepository repository, UsuarioService usuarioService, EnderecoService enderecoService, EmailConteudoService emailService) {
-        this.repository = repository;
-        this.usuarioService = usuarioService;
-        this.enderecoService = enderecoService;
-        this.emailService = emailService;
-    }
 
     public List<CooperativaResponseDTO> listarCooperativa(){
         return this.repository.findAll().stream().map(CooperativaMapper :: of).toList();

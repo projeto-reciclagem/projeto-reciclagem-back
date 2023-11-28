@@ -8,6 +8,7 @@ import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,18 +17,13 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AgendaService {
 
     private final AgendaRepository repository;
     private final CooperativaService cooperativaService;
     private final CondominioService condominioService;
 
-
-    public AgendaService(AgendaRepository repository, CooperativaService cooperativaService, CondominioService condominioService) {
-        this.repository = repository;
-        this.cooperativaService = cooperativaService;
-        this.condominioService = condominioService;
-    }
 
     public List<AgendaResponseDTO> listarAgendamentos(){
         List<Agenda> agendamentos = this.repository.findAll();

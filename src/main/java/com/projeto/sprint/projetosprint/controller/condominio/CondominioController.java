@@ -7,6 +7,7 @@ import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,13 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/condominios")
+@RequiredArgsConstructor
 public class CondominioController {
 
-    private CondominioService service;
-
-    public CondominioController(CondominioService service) {
-        this.service = service;
-    }
+    private final CondominioService service;
 
     //Lista condominio
     @GetMapping("/listar")

@@ -11,6 +11,7 @@ import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
 import com.projeto.sprint.projetosprint.util.OrdenacaoCnpj;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,12 +24,9 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/cooperativas")
+@RequiredArgsConstructor
 public class CooperativaController {
-    private CooperativaService service;
-
-    public CooperativaController(CooperativaService service) {
-        this.service = service;
-    }
+    private final CooperativaService service;
 
     //LISTA TODAS AS COOPERATIVAS
     @GetMapping("/listar")

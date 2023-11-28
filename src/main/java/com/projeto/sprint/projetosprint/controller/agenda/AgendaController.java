@@ -6,6 +6,7 @@ import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/agendamentos")
+@RequiredArgsConstructor
 public class AgendaController {
 
     private final AgendaService service;
-
-    public AgendaController(AgendaService service) {
-        this.service = service;
-    }
 
     @GetMapping("/listar")
     public ResponseEntity<List<AgendaResponseDTO>> listarAgendamentos() {

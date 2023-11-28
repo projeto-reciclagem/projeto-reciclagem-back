@@ -7,6 +7,7 @@ import com.projeto.sprint.projetosprint.controller.usuario.mapper.UsuarioMapper;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
 import com.projeto.sprint.projetosprint.domain.repository.UsuarioRepository;
 import com.projeto.sprint.projetosprint.infra.security.jwt.GerenciadorTokenJwt;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,19 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final UsuarioRepository repository;
+    private final PasswordEncoder passwordEncoder;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
+    private final AuthenticationManager authenticationManager;
 
     public Usuario cadastrar(UsuarioCriacaoDTO usuarioCriacaoDTO){
         final Usuario novoUsuario = UsuarioMapper.of(usuarioCriacaoDTO);
