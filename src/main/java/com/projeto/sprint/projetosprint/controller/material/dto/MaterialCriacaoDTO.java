@@ -15,5 +15,5 @@ public class MaterialCriacaoDTO {
     @NotNull
     public Double valorKg;
 
-    public Cooperativa cooperativa;
+    public Integer fkCooperativa;
 }

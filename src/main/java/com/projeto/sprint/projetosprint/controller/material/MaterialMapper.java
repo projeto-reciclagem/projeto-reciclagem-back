@@ -22,10 +22,6 @@ public class MaterialMapper {
         material.setNome(dto.nome);
         material.setValorKg(dto.valorKg);
 
-        if(dto.cooperativa != null){
-            material.setCooperativa(dto.cooperativa);
-        }
-
         return material;
     }
 }

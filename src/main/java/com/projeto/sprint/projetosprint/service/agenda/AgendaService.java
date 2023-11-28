@@ -80,7 +80,17 @@ public class AgendaService {
         LocalDateTime datSemanaPassada = datAtual.minusWeeks(1);
 
         return this.repository.condominiosAtendidosUltimaSemana(idCooperativa, datSemanaPassada, datAtual);
-
     }
+
+    public List<Agenda> historicoDePedidos(int idCondominio, int idCooperativa){
+        if(idCondominio != 0){
+            return this.repository.findByCondominioId(idCondominio);
+        }
+        else if (idCooperativa != 0){
+            return this.repository.findByCooperativaId(idCooperativa);
+        }
+        return null;
+    }
+
 
 }

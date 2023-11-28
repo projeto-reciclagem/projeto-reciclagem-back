@@ -20,4 +20,8 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
     @Query("SELECT COUNT(a) FROM Agenda a WHERE a.cooperativa.id = :idCooperativa AND" +
             " a.datAgendamento BETWEEN :endData AND :data")
     Integer condominiosAtendidosUltimaSemana(int idCooperativa, LocalDateTime endData, LocalDateTime data);
+
+    List<Agenda>findByCondominioId(int id);
+    List<Agenda>findByCooperativaId(int id);
+
 }
