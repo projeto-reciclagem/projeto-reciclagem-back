@@ -4,12 +4,15 @@ import com.projeto.sprint.projetosprint.controller.materialColetado.dto.Material
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
+import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialColetadoRepository;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
+import com.projeto.sprint.projetosprint.util.PilhaObj;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -55,5 +58,22 @@ public class MaterialColetadoService {
                 dataAtual.minusWeeks(1),
                 dataAtual);
         return totalColetado;
+    }
+
+    public MaterialUltimaSemana buscarMaterialMaisReciclado(int idCooperativa){
+        LocalDateTime dataAtual = LocalDateTime.now();
+
+        String materialMaisReciclado = this.repository.buscarMaterialMaisReciclado(
+                idCooperativa,
+                dataAtual.minusWeeks(1),
+                dataAtual
+        );
+
+        MaterialUltimaSemana material = new MaterialUltimaSemana();
+        int i = materialMaisReciclado.indexOf(",");
+        material.setNome(materialMaisReciclado.substring(0, i));
+        material.setQntKgColetada(Double.valueOf(materialMaisReciclado.substring(i + 1 , materialMaisReciclado.length())));
+
+        return material;
     }
 }

@@ -2,6 +2,7 @@ package com.projeto.sprint.projetosprint.controller.materialColetado;
 
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
+import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.service.material.MaterialColetadoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,13 @@ public class MaterialColetadoController {
     public ResponseEntity<Double> totalColetadoUltimaSemana(@PathVariable int id){
         return ResponseEntity.ok(
                 this.service.totalColetadoUltimaSemana(id)
+        );
+    }
+
+    @GetMapping("/mais-coletado/{id}")
+    public ResponseEntity<MaterialUltimaSemana> buscarMaterialMaisReciclado(@PathVariable int id){
+        return ResponseEntity.ok(
+          this.service.buscarMaterialMaisReciclado(id)
         );
     }
 }
