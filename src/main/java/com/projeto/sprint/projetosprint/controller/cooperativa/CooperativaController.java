@@ -189,6 +189,7 @@ public class CooperativaController {
     public ResponseEntity<List<Material>> uploadTxt(@RequestParam MultipartFile file, @PathVariable Integer id){
          List materiais = this.serviceMaterial.uploadTxT(file,id);
         return ResponseEntity.ok(materiais);
+        
     }
 
     /*@GetMapping("/listar-email-cooperativa")
