@@ -14,7 +14,7 @@ public class MaterialColetado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Double qntKgColeado;
+    private Double qntKgColetado;
 
     private Double vlrTotalColedo;
 

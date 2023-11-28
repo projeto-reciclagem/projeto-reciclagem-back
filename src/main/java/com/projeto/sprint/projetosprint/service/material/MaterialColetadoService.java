@@ -9,6 +9,9 @@ import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MaterialColetadoService {
@@ -21,9 +24,9 @@ public class MaterialColetadoService {
         Agenda agendamento = this.agendaService.buscarAgendaPorId(materialDto.getFkAgendamento());
 
         MaterialColetado materialColetado = new MaterialColetado();
-        materialColetado.setQntKgColeado(materialDto.getQntKgColeado());
+        materialColetado.setQntKgColetado(materialDto.getQntKgColeado());
         materialColetado.setVlrTotalColedo(
-                materialColetado.getQntKgColeado() * materialPreco.getVlrMaterial()
+                materialColetado.getQntKgColetado() * materialPreco.getVlrMaterial()
         );
 
         materialColetado.setMaterialPreco(materialPreco);
@@ -42,5 +45,15 @@ public class MaterialColetadoService {
 
     public MaterialColetado listarMaterialColetadoAgenda(int idAgendamento){
         return this.repository.findByAgendaId(idAgendamento);
+    }
+
+    public Double totalColetadoUltimaSemana(int idCooperativa){
+        LocalDateTime dataAtual = LocalDateTime.now();
+
+        Double totalColetado = this.repository.totalColetadoUltimaSemana(
+                idCooperativa,
+                dataAtual.minusWeeks(1),
+                dataAtual);
+        return totalColetado;
     }
 }
