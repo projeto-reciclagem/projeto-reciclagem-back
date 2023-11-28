@@ -35,6 +35,8 @@ public class CooperativaMapper {
                 cooperativaResponseDTO.setBairro(endereco.getBairro());
                 cooperativaResponseDTO.setCidade(endereco.getCidade());
                 cooperativaResponseDTO.setComplemento(endereco.getComplemento());
+                cooperativaResponseDTO.setLatitude(endereco.getLatitude());
+                cooperativaResponseDTO.setLongitude(endereco.getLongitude());
             }
         }
 

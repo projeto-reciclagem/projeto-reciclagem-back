@@ -4,7 +4,11 @@ import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioCriacaoDTO
 import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioLoginDTO;
 import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioTokenDTO;
 import com.projeto.sprint.projetosprint.controller.usuario.mapper.UsuarioMapper;
+import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
+import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
+import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
+import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
 import com.projeto.sprint.projetosprint.domain.repository.UsuarioRepository;
 import com.projeto.sprint.projetosprint.infra.security.jwt.GerenciadorTokenJwt;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,8 @@ import org.springframework.stereotype.Service;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+    private final CooperativaRepository cooperativaRepository;
+    private final CondominioRepository condominioRepository;
     private final PasswordEncoder passwordEncoder;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
     private final AuthenticationManager authenticationManager;
@@ -46,6 +52,18 @@ public class UsuarioService {
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
+        Long id = usuarioAutenticado.getId();
+        switch (usuarioAutenticado.getTipoUsuario()){
+            case COOPERATIVA:
+                Cooperativa cooperativa = this.cooperativaRepository.findByUsuarioId(id);
+                id = Long.valueOf(cooperativa.getId());
+                break;
+            case CONDOMINIO:
+                Condominio condominio = this.condominioRepository.findByUsuarioId(id);
+                id = Long.valueOf(condominio.getId());
+                break;
+        }
+        usuarioAutenticado.setId(id);
         return UsuarioMapper.of(usuarioAutenticado, token);
     }
 

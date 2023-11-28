@@ -18,6 +18,6 @@ public class Cooperativa {
 
     @OneToOne
     @JoinColumn(name = "fk_usuario")
-    private Usuario Usuario;
+    private Usuario usuario;
 
 }
