@@ -12,8 +12,12 @@ import java.util.Optional;
 
 public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
 
-    @Query("SELECT a FROM Agenda a WHERE a.datRetirada BETWEEN :data AND :endData")
-    List<Agenda> findByDatRetirada(LocalDateTime data, LocalDateTime endData);
+    @Query("SELECT a FROM Agenda a WHERE a.cooperativa.id = :idCooperativa AND a.datRetirada BETWEEN :data AND :endData")
+    List<Agenda> findByDatRetiradaCooperativa(int idCooperativa, LocalDateTime data, LocalDateTime endData);
+
+    @Query("SELECT a FROM Agenda a WHERE a.condominio.id = :idCondominio AND a.datRetirada BETWEEN :data AND :endData")
+    List<Agenda> findByDatRetiradaCondominio(int idCondominio, LocalDateTime data, LocalDateTime endData);
+
 
     @Query("SELECT COUNT(a) FROM Agenda a WHERE a.status = 1 AND a.cooperativa.id = :idCooperativa AND" +
             " a.datRetirada BETWEEN :endData AND :data")

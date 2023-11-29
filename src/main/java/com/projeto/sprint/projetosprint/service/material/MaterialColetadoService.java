@@ -3,6 +3,7 @@ package com.projeto.sprint.projetosprint.service.material;
 import com.projeto.sprint.projetosprint.controller.materialColetado.MaterialColetadoMapper;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
@@ -131,5 +132,10 @@ public class MaterialColetadoService {
                 idCondominio,
                 dataAtual.minusMonths(1),
                 dataAtual);
+    }
+
+    public List<MaterialPorColetaDTO> kgMaterialPorColeta(int id){
+
+        return null;
     }
 }

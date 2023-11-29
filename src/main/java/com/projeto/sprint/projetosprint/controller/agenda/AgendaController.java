@@ -52,10 +52,10 @@ public class AgendaController {
     }
 
     @GetMapping("/buscar/data")
-    public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data){
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data, @RequestParam int idCondominio, @RequestParam int idCooperativa){
         LocalDateTime dataConsulta = data.atStartOfDay();
 
-        List<Agenda> agendamentos = this.service.buscarPorData(dataConsulta);
+        List<Agenda> agendamentos = this.service.buscarPorData(dataConsulta, idCondominio, idCooperativa);
         return ResponseEntity.ok(
                 agendamentos.stream().map(AgendaMapper :: of).toList()
         );

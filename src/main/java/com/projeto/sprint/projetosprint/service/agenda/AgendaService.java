@@ -62,9 +62,16 @@ public class AgendaService {
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
 
-    public List<Agenda> buscarPorData(LocalDateTime data){
-        LocalDateTime endData = data.toLocalDate().atTime(23,59,49);
-        return this.repository.findByDatRetirada(data, endData);
+    public List<Agenda> buscarPorData(LocalDateTime data, int idCondominio, int idCooperativa){
+        LocalDateTime endData = data.toLocalDate().atTime(23, 59, 59);
+
+        if(idCondominio != 0){
+            return this.repository.findByDatRetiradaCondominio(idCondominio, data, endData);
+        }
+        else if (idCooperativa != 0){
+            return this.repository.findByDatRetiradaCooperativa(idCooperativa, data, endData);
+        }
+        return null;
     }
 
     public Integer coletasUltimasSemanas(int idCooperativa){
