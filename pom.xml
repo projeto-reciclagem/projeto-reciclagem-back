@@ -10,11 +10,12 @@
 	</parent>
 	<groupId>com.projeto.sprint</groupId>
 	<artifactId>projeto-sprint</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>projeto-sprint</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
+		<maven.compiler.release>17</maven.compiler.release>
 	</properties>
 	<dependencies>
 
