@@ -27,6 +27,7 @@ public class CooperativaMapper {
         if (cooperativa.getUsuario() != null){
             Usuario usuario = cooperativa.getUsuario();
             cooperativaResponseDTO.setEmail(usuario.getEmail());
+            cooperativaResponseDTO.setImgUsuario(usuario.getImgUsuario());
 
             if(usuario.getEndereco() != null){
                 Endereco endereco = usuario.getEndereco();
@@ -55,6 +56,7 @@ public class CooperativaMapper {
         //GUARDANDO OS DADOS DO USUÁRIO
         usuario.setEmail(cooperativaDTO.getEmail());
         usuario.setSenha(cooperativaDTO.getSenha());
+        usuario.setImgUsuario(cooperativaDTO.getImgUsuario());
 
         //GUARDANDO OS DADOS DO ENDERECO
         endereco.setBairro(cooperativaDTO.getBairro());

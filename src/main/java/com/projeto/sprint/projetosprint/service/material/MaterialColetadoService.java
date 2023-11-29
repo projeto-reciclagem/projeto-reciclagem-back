@@ -116,7 +116,7 @@ public class MaterialColetadoService {
 
         Map<String, Double> mapQuantidadeMaterial = listMateriais.stream()
                 .collect(Collectors.groupingBy(material -> material.getNome(),
-                        Collectors.summingDouble(material -> material.getQntKgColeado())
+                        Collectors.summingDouble(material -> material.getQntKgColetado())
                 ));
 
         Double total = this.repository.quantidadeKgTotal(idCooperativa);

@@ -8,7 +8,7 @@ import lombok.Data;
 public class MaterialColetadoResponseDTO {
     private Integer id;
     private String nome;
-    private Double qntKgColeado;
+    private Double qntKgColetado;
     private Double vlrTotalColedo;
     private AgendaResponseDTO agendamento;
 }

@@ -20,6 +20,8 @@ public class CondominioAtualizarDTO {
     @Email
     public String email;
 
+    public String ImgUsuario;
+
     @NotBlank
     @Size(min = 8, max = 40)
     public String senha;

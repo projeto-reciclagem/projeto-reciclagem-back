@@ -10,7 +10,7 @@ public class MaterialColetadoMapper {
 
         materialDto.setId(materialColetado.getId());
         materialDto.setNome(materialColetado.getMaterialPreco().getNome());
-        materialDto.setQntKgColeado(materialColetado.getQntKgColetado());
+        materialDto.setQntKgColetado(materialColetado.getQntKgColetado());
         materialDto.setVlrTotalColedo(materialColetado.getVlrTotalColedo());
         materialDto.setAgendamento(AgendaMapper.of(materialColetado.getAgenda()));
         return materialDto;

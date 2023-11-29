@@ -32,6 +32,7 @@ public class CondominioMapper {
         if (condominio.getUsuario() != null){
             Usuario usuario = condominio.getUsuario();
             condominioResponseDTO.setEmail(usuario.getEmail());
+            condominioResponseDTO.setImgUsuario(usuario.getImgUsuario());
 
             if (usuario.getEndereco() != null){
                 Endereco endereco = condominio.getUsuario().getEndereco();
@@ -63,6 +64,7 @@ public class CondominioMapper {
         //USUARIO
         usuario.setEmail(condominioDTO.email);
         usuario.setSenha(condominioDTO.senha);
+        usuario.setImgUsuario(condominioDTO.getImgUsuario());
 
         //ENDERECO
         endereco.setBairro(condominioDTO.getBairro());
