@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MaterialPrecoRepository extends JpaRepository<MaterialPreco, Integer> {
     List<MaterialPreco> findByCooperativaId(int id);
+    List<MaterialPreco> findByCooperativaIdOrderByVlrMaterial(int id);
 }

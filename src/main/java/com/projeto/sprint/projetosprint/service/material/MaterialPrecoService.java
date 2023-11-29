@@ -5,6 +5,8 @@ import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialPrecoRepository;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
+import com.projeto.sprint.projetosprint.util.FilaObj;
+import com.projeto.sprint.projetosprint.util.PilhaMaterialPreco;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +41,14 @@ public class MaterialPrecoService {
         return this.repository.findById(id).get();
     }
 
-    public List<MaterialPreco> buscarMaterialPrecoPorIdCooperativa(int id){
+    public List<MaterialPreco> buscarMaterialPrecoPorIdCooperativa(int id) {
+        List<MaterialPreco> listMaterialPreco = this.repository.findByCooperativaId(id);
+
+        return PilhaMaterialPreco.listMenorPreco(listMaterialPreco);
+    }
+
+    public List<MaterialPreco> buscarMaterialCooperativaValor(int id) {
+        List<MaterialPreco> listMaterialPreco = this.repository.findByCooperativaIdOrderByVlrMaterial(id);
         return this.repository.findByCooperativaId(id);
     }
 }

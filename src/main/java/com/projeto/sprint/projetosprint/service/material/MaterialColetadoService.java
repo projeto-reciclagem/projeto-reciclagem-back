@@ -11,6 +11,7 @@ import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialColetadoRepository;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
+import com.projeto.sprint.projetosprint.util.FilaMaterialReciclado;
 import com.projeto.sprint.projetosprint.util.PilhaObj;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
@@ -108,10 +109,11 @@ public class MaterialColetadoService {
             result.put(day.toString(), sumByDayOfWeek.getOrDefault(day, 0.0));
         }
 
+
         return result;
     }
 
-    public Map<String, Double> porcentagemPorMaterial(int idCooperativa){
+    public List<ChaveValor> porcentagemPorMaterial(int idCooperativa){
         List<MaterialColetadoResponseDTO> listMateriais = this.listarMaterialColetadoCooperativa(idCooperativa);
 
         Map<String, Double> mapQuantidadeMaterial = listMateriais.stream()
@@ -126,7 +128,7 @@ public class MaterialColetadoService {
             Double valorPorcentagem =  (valor * 100) / total;
             mapQuantidadeMaterial.put(map.getKey(), (double) Math.round(valorPorcentagem));
         }
-        return mapQuantidadeMaterial;
+        return FilaMaterialReciclado.listMaterialMaisRecicladoPorDia(mapQuantidadeMaterial);
     }
 
     public Double valorTotalUltimoMes(int idCondominio){

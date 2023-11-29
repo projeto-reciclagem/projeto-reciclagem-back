@@ -50,8 +50,8 @@ public class MaterialColetadoController {
 
     @GetMapping("/porcentagem-material/{id}")
     public ResponseEntity<List<ChaveValor>> porcetanegemMaterial(@PathVariable int id) {
-        return ResponseEntity.ok(ChaveValorMapper.of(
-                this.service.porcentagemPorMaterial(id)));
+        return ResponseEntity.ok(
+            this.service.porcentagemPorMaterial(id));
     }
 
     @GetMapping("/valor-total/mes/{id}")

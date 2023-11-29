@@ -12,7 +12,9 @@
 	<artifactId>projeto-sprint</artifactId>
 	<version>1.0.0</version>
 	<name>projeto-sprint</name>
-	<description>Demo project for Spring Boot</description>
+	<description>
+
+	</description>
 	<properties>
 		<java.version>17</java.version>
 		<maven.compiler.release>17</maven.compiler.release>
