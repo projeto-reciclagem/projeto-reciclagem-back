@@ -39,7 +39,7 @@ public class EmailService {
             helper.setFrom(remetente);
             helper.setTo(destinatario);
             helper.setSubject(titulo);
-            helper.setText(conteudo);
+            helper.setText(conteudo, true);
         } catch (MessagingException e) {
             throw new MailParseException(e);
         }

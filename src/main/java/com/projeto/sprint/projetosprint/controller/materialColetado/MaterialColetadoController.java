@@ -3,6 +3,7 @@ package com.projeto.sprint.projetosprint.controller.materialColetado;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ValorRecebidoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.service.material.MaterialColetadoService;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
@@ -64,6 +65,13 @@ public class MaterialColetadoController {
     public ResponseEntity<List<MaterialPorColetaDTO>> materialPorColeta(@PathVariable int id){
         return ResponseEntity.ok(
                 this.service.kgMaterialPorColeta(id)
+        );
+    }
+
+    @GetMapping("/valor-recebido/mes/{id}")
+    public ResponseEntity<List<ValorRecebidoMesDTO>> valorRecebidoMes(@PathVariable int id){
+        return ResponseEntity.ok(
+            this.service.valorRecebidoPorMes(id)
         );
     }
 }

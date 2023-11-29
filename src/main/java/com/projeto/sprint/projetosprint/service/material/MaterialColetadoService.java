@@ -4,6 +4,7 @@ import com.projeto.sprint.projetosprint.controller.materialColetado.MaterialCole
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ValorRecebidoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
@@ -181,4 +182,22 @@ public class MaterialColetadoService {
         }
         return ChaveValorMapper.mapperMaterialPorColeta(map);
     }
+
+    public List<ValorRecebidoMesDTO> valorRecebidoPorMes(int idCondominio){
+        List<MaterialPorColetaDTO> listMaterial = kgMaterialPorColeta(idCondominio);
+        List<ValorRecebidoMesDTO> listValorRecebido = new ArrayList<>();
+
+        for (MaterialPorColetaDTO materialDTO : listMaterial) {
+            ValorRecebidoMesDTO valorRecebido = new ValorRecebidoMesDTO();
+            valorRecebido.setMes(materialDTO.getData());
+            valorRecebido.setValor(0.0);
+
+            for (ChaveValor c : materialDTO.getValor()) {
+                valorRecebido.setValor(valorRecebido.getValor() + c.getValor());
+            }
+            listValorRecebido.add(valorRecebido);
+        }
+        return listValorRecebido;
+    }
+
 }

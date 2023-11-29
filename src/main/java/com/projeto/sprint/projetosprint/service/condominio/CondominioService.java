@@ -70,7 +70,7 @@ public class CondominioService {
 
         UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
                 "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
-                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
+                "Esperamos que nossa aplicação auxilie na rotina de coleta do seu Condominio " + dados.getNome() + " <br> :)"));
 
         EmailBoasVindas destinatario = new EmailBoasVindas(
                 dados.getNome(), dados.email);
