@@ -34,4 +34,10 @@ public class MaterialColetadoController {
           this.service.buscarMaterialMaisReciclado(id)
         );
     }
+
+    @GetMapping("/reciclagem-semanal/{id}")
+    public ResponseEntity<Void> reciclagemSemanal(@PathVariable int id){
+        this.service.reciclagemSemanal(id);
+        return ResponseEntity.noContent().build();
+    }
 }

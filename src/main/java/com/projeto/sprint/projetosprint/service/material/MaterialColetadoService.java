@@ -11,9 +11,13 @@ import com.projeto.sprint.projetosprint.util.PilhaObj;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,5 +79,30 @@ public class MaterialColetadoService {
         material.setQntKgColetada(Double.valueOf(materialMaisReciclado.substring(i + 1 , materialMaisReciclado.length())));
 
         return material;
+    }
+
+    public void reciclagemSemanal(int idCooperativa) {
+        LocalDateTime dataAtual = LocalDateTime.now();
+
+        List<MaterialColetado> materiais = this.repository.reciclagemSemanal(
+                idCooperativa,
+                dataAtual.minusWeeks(1),
+                dataAtual
+        );
+
+        Map<DayOfWeek, Double> sumByDayOfWeek = materiais.stream()
+                .collect(Collectors.groupingBy(
+                        date -> date.getAgenda().getDatAgendamento().getDayOfWeek(),
+                        Collectors.summingDouble(date -> date.getQntKgColetado())
+                ));
+
+        Map<String, Double> result = new TreeMap<>();
+        for (DayOfWeek day : DayOfWeek.values()) {
+            result.put(day.toString(), sumByDayOfWeek.getOrDefault(day, 0.0));
+        }
+
+
+        // Imprime o resultado
+        System.out.println(result);
     }
 }

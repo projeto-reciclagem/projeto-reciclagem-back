@@ -23,5 +23,9 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
             "ORDER BY qntKgColetado LIMIT 1")
     String buscarMaterialMaisReciclado(int idCooperativa, LocalDateTime endData, LocalDateTime data);
 
+    @Query("SELECT mc from MaterialColetado mc " +
+            "WHERE mc.agenda.cooperativa.id = :idCooperativa AND mc.agenda.datAgendamento BETWEEN :endData AND :data ")
+    List<MaterialColetado> reciclagemSemanal(int idCooperativa, LocalDateTime endData, LocalDateTime data);
+
 
 }

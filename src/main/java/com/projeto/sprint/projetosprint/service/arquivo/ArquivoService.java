@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class ArquivoService {
@@ -22,7 +24,9 @@ public class ArquivoService {
     private String supabaseApiKey;
 
     public String enviarImagemParaSupabase(MultipartFile file) throws IOException {
-        String storageEndpoint = supabaseStorageUrl + "/" + file.getOriginalFilename();
+
+        String storageEndpoint = supabaseStorageUrl + "/" + file.getOriginalFilename()
+                .replace(" ", "");
 
         RestTemplate restTemplate = new RestTemplate();
 
