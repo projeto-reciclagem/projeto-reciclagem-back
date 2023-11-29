@@ -11,11 +11,14 @@ import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSem
 import com.projeto.sprint.projetosprint.domain.repository.MaterialColetadoRepository;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import com.projeto.sprint.projetosprint.util.PilhaObj;
+import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
+import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
+import com.projeto.sprint.projetosprint.util.data.AnoMes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -135,7 +138,47 @@ public class MaterialColetadoService {
     }
 
     public List<MaterialPorColetaDTO> kgMaterialPorColeta(int id){
+        LocalDateTime dataAtual = LocalDateTime.now();
 
-        return null;
+        List<MaterialColetado> listMateriais = this.repository.materialPorColetaAno(
+                id,
+                dataAtual.minusYears(1),
+                dataAtual
+        );
+
+        Map<String, List<ChaveValor>> map = new TreeMap<>();
+
+        for (MaterialColetado material : listMateriais){
+            Month mes = material.getAgenda().getDatRetirada().getMonth();
+            int ano = material.getAgenda().getDatRetirada().getYear();
+
+            String anoMes = mes+"/"+ano;
+
+            Boolean exists = false;
+            for (Map.Entry<String, List<ChaveValor>> mapAnoMes : map.entrySet()){
+                String a = mapAnoMes.getKey();
+                if(a.equals(anoMes)){
+                    exists = true;
+                }
+            }
+
+            if(!exists){
+                map.put(anoMes, new ArrayList<>());
+            }
+
+            boolean encontrouChave = false;
+            for (ChaveValor chaveValor : map.get(anoMes)) {
+                if (chaveValor.getChave().equals(material.getMaterialPreco().getNome())) {
+                    // Se encontrou a chave, soma o valor existente
+                    chaveValor.setValor(chaveValor.getValor() + material.getQntKgColetado());
+                    encontrouChave = true;
+                    break;
+                }
+            }
+            if (!encontrouChave) {
+                map.get(anoMes).add(new ChaveValor(material.getMaterialPreco().getNome(), material.getQntKgColetado()));
+            }
+        }
+        return ChaveValorMapper.mapperMaterialPorColeta(map);
     }
 }
