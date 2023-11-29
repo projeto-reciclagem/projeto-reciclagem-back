@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/materiais/coletados")
 @RequiredArgsConstructor
@@ -36,8 +38,9 @@ public class MaterialColetadoController {
     }
 
     @GetMapping("/reciclagem-semanal/{id}")
-    public ResponseEntity<Void> reciclagemSemanal(@PathVariable int id){
-        this.service.reciclagemSemanal(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Map<String, Double>> reciclagemSemanal(@PathVariable int id){
+        return ResponseEntity.ok(
+                this.service.reciclagemSemanal(id)
+        );
     }
 }

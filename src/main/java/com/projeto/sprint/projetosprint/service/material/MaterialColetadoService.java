@@ -81,7 +81,7 @@ public class MaterialColetadoService {
         return material;
     }
 
-    public void reciclagemSemanal(int idCooperativa) {
+    public Map<String, Double> reciclagemSemanal(int idCooperativa) {
         LocalDateTime dataAtual = LocalDateTime.now();
 
         List<MaterialColetado> materiais = this.repository.reciclagemSemanal(
@@ -101,8 +101,6 @@ public class MaterialColetadoService {
             result.put(day.toString(), sumByDayOfWeek.getOrDefault(day, 0.0));
         }
 
-
-        // Imprime o resultado
-        System.out.println(result);
+        return result;
     }
 }
