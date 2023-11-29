@@ -1,6 +1,8 @@
 package com.projeto.sprint.projetosprint.service.material;
 
+import com.projeto.sprint.projetosprint.controller.materialColetado.MaterialColetadoMapper;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,8 +43,9 @@ public class MaterialColetadoService {
         return this.repository.save(materialColetado);
     }
 
-    public MaterialColetado listarMaterialColetadoCooperativa(int idCooperativa){
-        return this.repository.findByAgendaCooperativaId(idCooperativa);
+    public List<MaterialColetadoResponseDTO> listarMaterialColetadoCooperativa(int idCooperativa){
+        return this.repository.findByAgendaCooperativaId(idCooperativa)
+                .stream().map(MaterialColetadoMapper :: of).toList();
     }
 
     public MaterialColetado listarMaterialColetadoCondominio(int idCondominio){
@@ -102,5 +104,24 @@ public class MaterialColetadoService {
         }
 
         return result;
+    }
+
+    public Map<String, Double> porcentagemPorMaterial(int idCooperativa){
+        List<MaterialColetadoResponseDTO> listMateriais = this.listarMaterialColetadoCooperativa(idCooperativa);
+
+        Map<String, Double> mapQuantidadeMaterial = listMateriais.stream()
+                .collect(Collectors.groupingBy(material -> material.getNome(),
+                        Collectors.summingDouble(material -> material.getQntKgColeado())
+                ));
+
+        Double total = this.repository.quantidadeKgTotal(idCooperativa);
+
+        for (Map.Entry<String, Double> map : mapQuantidadeMaterial.entrySet()) {
+            Double valor = map.getValue();
+            Double valorPorcentagem =  (valor * 100) / total;
+            mapQuantidadeMaterial.put(map.getKey(), (double) Math.round(valorPorcentagem));
+        }
+
+        return mapQuantidadeMaterial;
     }
 }

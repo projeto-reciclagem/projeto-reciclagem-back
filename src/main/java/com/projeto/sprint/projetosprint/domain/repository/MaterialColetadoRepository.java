@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MaterialColetadoRepository extends JpaRepository<MaterialColetado, Integer> {
-    MaterialColetado findByAgendaCooperativaId(int id);
+    List<MaterialColetado> findByAgendaCooperativaId(int id);
     MaterialColetado findByAgendaCondominioId(int id);
     MaterialColetado findByAgendaId(int id);
 
@@ -27,5 +27,7 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
             "WHERE mc.agenda.cooperativa.id = :idCooperativa AND mc.agenda.datAgendamento BETWEEN :endData AND :data ")
     List<MaterialColetado> reciclagemSemanal(int idCooperativa, LocalDateTime endData, LocalDateTime data);
 
+    @Query("SELECT SUM(mc.qntKgColetado) FROM MaterialColetado mc WHERE mc.agenda.cooperativa.id = :idCooperativa")
+    Double quantidadeKgTotal(int idCooperativa);
 
 }

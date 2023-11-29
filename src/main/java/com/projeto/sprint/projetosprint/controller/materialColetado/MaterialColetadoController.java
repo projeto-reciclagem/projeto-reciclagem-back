@@ -4,10 +4,13 @@ import com.projeto.sprint.projetosprint.controller.materialColetado.dto.Material
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.service.material.MaterialColetadoService;
+import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
+import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,9 +41,14 @@ public class MaterialColetadoController {
     }
 
     @GetMapping("/reciclagem-semanal/{id}")
-    public ResponseEntity<Map<String, Double>> reciclagemSemanal(@PathVariable int id){
-        return ResponseEntity.ok(
-                this.service.reciclagemSemanal(id)
-        );
+    public ResponseEntity<List<ChaveValor>> reciclagemSemanal(@PathVariable int id){
+        return ResponseEntity.ok(ChaveValorMapper.of(
+                this.service.reciclagemSemanal(id)));
+    }
+
+    @GetMapping("/porcentagem-material/{id}")
+    public ResponseEntity<List<ChaveValor>> porcetanegemMaterial(@PathVariable int id) {
+        return ResponseEntity.ok(ChaveValorMapper.of(
+                this.service.porcentagemPorMaterial(id)));
     }
 }
