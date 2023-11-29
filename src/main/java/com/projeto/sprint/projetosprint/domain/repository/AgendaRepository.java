@@ -1,12 +1,14 @@
 package com.projeto.sprint.projetosprint.domain.repository;
 
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
+import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
 
@@ -23,5 +25,16 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
 
     List<Agenda>findByCondominioId(int id);
     List<Agenda>findByCooperativaId(int id);
+
+    @Query("SELECT COUNT(a) FROM Agenda a WHERE a.condominio.id = :idCondominio AND" +
+            " a.datAgendamento BETWEEN :endData AND :data")
+    Integer countByCondominioId(int idCondominio, LocalDateTime endData, LocalDateTime data);
+
+    @Query("SELECT a FROM Agenda a WHERE a.condominio.id = :idCondominio AND a.status = :status " +
+            "ORDER BY a.datRetirada DESC " +
+            "LIMIT 1")
+    Optional<Agenda>ultimaColetaFeita(int idCondominio, Status status);
+
+
 
 }

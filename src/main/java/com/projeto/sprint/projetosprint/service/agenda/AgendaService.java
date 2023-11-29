@@ -4,6 +4,7 @@ import com.projeto.sprint.projetosprint.controller.agenda.AgendaMapper;
 import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
+import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +93,22 @@ public class AgendaService {
 
     public Agenda buscarAgendaPorId(int id){
         return this.repository.findById(id).get();
+    }
+
+    public Integer coletasSolicitadasUltimoMes(int idCondominio){
+        LocalDateTime dataAtual = LocalDateTime.now();
+
+        return this.repository.countByCondominioId(idCondominio,
+                dataAtual.minusMonths(1),
+                dataAtual);
+    }
+
+    public Integer ultimaColetaFeita(int idCondominio) {
+        Optional<Agenda> agenda = this.repository.ultimaColetaFeita(idCondominio, Status.CONCLUIDO);
+
+        if (agenda.isEmpty()) return 0;
+
+        return (int) ChronoUnit.DAYS.between(agenda.get().getDatRetirada().toLocalDate(), LocalDate.now());
     }
 
 }

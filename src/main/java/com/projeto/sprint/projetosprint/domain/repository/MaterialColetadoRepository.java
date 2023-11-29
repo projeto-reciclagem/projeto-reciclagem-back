@@ -30,4 +30,7 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
     @Query("SELECT SUM(mc.qntKgColetado) FROM MaterialColetado mc WHERE mc.agenda.cooperativa.id = :idCooperativa")
     Double quantidadeKgTotal(int idCooperativa);
 
+    @Query("SELECT SUM(mc.qntKgColetado) FROM MaterialColetado mc WHERE mc.agenda.condominio.id = :idCondominio AND" +
+            " mc.agenda.datAgendamento BETWEEN :endData AND :data")
+    Double valorTotalUltimoMes(int idCondominio, LocalDateTime endData, LocalDateTime data);
 }

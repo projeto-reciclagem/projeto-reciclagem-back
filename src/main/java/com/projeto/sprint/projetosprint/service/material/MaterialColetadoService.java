@@ -121,7 +121,15 @@ public class MaterialColetadoService {
             Double valorPorcentagem =  (valor * 100) / total;
             mapQuantidadeMaterial.put(map.getKey(), (double) Math.round(valorPorcentagem));
         }
-
         return mapQuantidadeMaterial;
+    }
+
+    public Double valorTotalUltimoMes(int idCondominio){
+        LocalDateTime dataAtual = LocalDateTime.now();
+
+        return this.repository.totalColetadoUltimaSemana(
+                idCondominio,
+                dataAtual.minusMonths(1),
+                dataAtual);
     }
 }

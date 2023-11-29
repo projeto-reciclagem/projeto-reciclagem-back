@@ -26,7 +26,7 @@ public class MaterialColetadoController {
         ));
     }
 
-    @GetMapping("/total-coletado/{id}")
+    @GetMapping("/total-coletado/semana/{id}")
     public ResponseEntity<Double> totalColetadoUltimaSemana(@PathVariable int id){
         return ResponseEntity.ok(
                 this.service.totalColetadoUltimaSemana(id)
@@ -50,5 +50,12 @@ public class MaterialColetadoController {
     public ResponseEntity<List<ChaveValor>> porcetanegemMaterial(@PathVariable int id) {
         return ResponseEntity.ok(ChaveValorMapper.of(
                 this.service.porcentagemPorMaterial(id)));
+    }
+
+    @GetMapping("/valor-total/mes/{id}")
+    public ResponseEntity<Double> valorTotalUltimoMes(@PathVariable int id){
+        return ResponseEntity.ok(
+                this.service.valorTotalUltimoMes(id)
+        );
     }
 }

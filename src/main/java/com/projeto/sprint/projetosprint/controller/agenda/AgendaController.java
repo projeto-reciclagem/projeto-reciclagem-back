@@ -82,4 +82,18 @@ public class AgendaController {
                         .stream().map(AgendaMapper :: of).toList()
         );
     }
+
+    @GetMapping("/coletas-solicitadas/mes/{id}")
+    public ResponseEntity<Integer> coletasSolicitadasUltimoMes(@PathVariable int id){
+        return ResponseEntity.ok(
+            this.service.coletasSolicitadasUltimoMes(id)
+        );
+    }
+
+    @GetMapping("/ultima-coleta/{id}")
+    public ResponseEntity<Integer> ultimaColeta(@PathVariable int id){
+        return ResponseEntity.ok(
+                this.service.ultimaColetaFeita(id)
+        );
+    }
 }
