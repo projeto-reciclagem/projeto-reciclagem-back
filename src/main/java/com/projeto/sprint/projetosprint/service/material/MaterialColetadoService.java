@@ -1,25 +1,30 @@
 package com.projeto.sprint.projetosprint.service.material;
 
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 import com.projeto.sprint.projetosprint.controller.materialColetado.MaterialColetadoMapper;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ValorRecebidoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
+import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialColetadoRepository;
+import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
-import com.projeto.sprint.projetosprint.util.DiasSemana;
-import com.projeto.sprint.projetosprint.util.FilaMaterialReciclado;
-import com.projeto.sprint.projetosprint.util.PilhaObj;
+import com.projeto.sprint.projetosprint.util.*;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
 import com.projeto.sprint.projetosprint.util.data.AnoMes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -199,5 +204,78 @@ public class MaterialColetadoService {
             listValorRecebido.add(valorRecebido);
         }
         return listValorRecebido;
+    }
+
+
+    public byte[] downloadMaterialColetaCsv(int id){
+        List<MaterialPorColetaDTO> listMaterial = kgMaterialPorColeta(id);
+
+        try{
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+
+            ICSVWriter csvWriter = new CSVWriterBuilder(outputStreamWriter)
+                    .withSeparator(';')
+                    .build();
+
+            String[] cabecalho = {"Mês", "Valores"};
+            csvWriter.writeNext(cabecalho);
+
+            for (int i = 0; i < listMaterial.size(); i++){
+                MaterialPorColetaDTO m = listMaterial.get(i);
+
+                String valorMateriais = "";
+                for(ChaveValor c : m.getValor()){
+                    valorMateriais += c.getChave() + ":"+ c.getValor() + ",";
+                }
+                //GRAVANDO OS DADOS DA COOPERATIVA NO ARQUIVO
+                String[] linha = {
+                        m.getData(),
+                        valorMateriais
+                };
+                csvWriter.writeNext(linha);
+            }
+            csvWriter.close();
+            outputStreamWriter.close();
+            byte[] csvBytes = byteArrayOutputStream.toByteArray();
+            return csvBytes;
+        }
+        catch (IOException e) {
+            throw new ImportacaoExportacaoException(e.getMessage());
+        }
+    }
+
+    public byte[] downloadValorRecebidoCsv(int id){
+        List<ValorRecebidoMesDTO> listValor = valorRecebidoPorMes(id);
+
+        try{
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+
+            ICSVWriter csvWriter = new CSVWriterBuilder(outputStreamWriter)
+                    .withSeparator(';')
+                    .build();
+
+            String[] cabecalho = {"Mês", "Valor"};
+            csvWriter.writeNext(cabecalho);
+
+            for (int i = 0; i < listValor.size(); i++){
+                ValorRecebidoMesDTO v = listValor.get(i);
+
+                //GRAVANDO OS DADOS DA COOPERATIVA NO ARQUIVO
+                String[] linha = {
+                        v.getMes(),
+                        v.getValor().toString()
+                };
+                csvWriter.writeNext(linha);
+            }
+            csvWriter.close();
+            outputStreamWriter.close();
+            byte[] csvBytes = byteArrayOutputStream.toByteArray();
+            return csvBytes;
+        }
+        catch (IOException e) {
+            throw new ImportacaoExportacaoException(e.getMessage());
+        }
     }
 }

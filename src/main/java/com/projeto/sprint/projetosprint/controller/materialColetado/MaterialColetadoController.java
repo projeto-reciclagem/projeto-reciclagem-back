@@ -5,13 +5,17 @@ import com.projeto.sprint.projetosprint.controller.materialColetado.dto.Material
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ValorRecebidoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
+import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.material.MaterialColetadoService;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -75,4 +79,46 @@ public class MaterialColetadoController {
             this.service.valorRecebidoPorMes(id)
         );
     }
+
+    @PostMapping( "/material-por-coleta/ano/{id}/export")
+    public ResponseEntity materialColetaAnoExport(@PathVariable int id) {
+        try{
+            byte[] csvData = this.service.downloadMaterialColetaCsv(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=materiais_coleta_" +
+                            LocalDateTime.now()
+                                    .toString()
+                                    .replace(":", "-")
+                                    .replace(".", "-") +
+                            ".csv");
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/csv");
+            return new ResponseEntity<>(csvData, headers, HttpStatus.OK);
+        }
+        catch (Exception e){
+            throw new ImportacaoExportacaoException(e.getMessage());
+        }
+    }
+
+    @PostMapping( "/valor-recebido/mes/{id}/export")
+    public ResponseEntity valorRecebidoMesExport(@PathVariable int id) {
+        try{
+            byte[] csvData = this.service.downloadValorRecebidoCsv(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=valor_recebido_" +
+                            LocalDateTime.now()
+                                    .toString()
+                                    .replace(":", "-")
+                                    .replace(".", "-") +
+                            ".csv");
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/csv");
+            return new ResponseEntity<>(csvData, headers, HttpStatus.OK);
+        }
+        catch (Exception e){
+            throw new ImportacaoExportacaoException(e.getMessage());
+        }
+    }
+
+
 }
