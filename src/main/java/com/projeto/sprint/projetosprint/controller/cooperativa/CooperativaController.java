@@ -77,7 +77,7 @@ public class CooperativaController {
     }
     
     //GRAVANDO OS DADOS EM UM ARQUIVO CSV
-    @PostMapping( "{id}/export/csv")
+    @PostMapping( "/{id}/export/csv")
     public ResponseEntity gravaArquivoCsv(@PathVariable int id) {
         try{
             byte[] csvData = this.service.downloadCooperativaCsv(id);
@@ -97,53 +97,19 @@ public class CooperativaController {
         }
     }
 
-    @PostMapping("/export/txt/{id}")
-    public ResponseEntity<byte[]>downloadTxT(@PathVariable Integer id){
-        Cooperativa cooperativa = this.service.buscaCoperativaId(id);
+    @PostMapping("/{id}/export/txt")
+    public ResponseEntity<byte[]>downloadTxT(@PathVariable int id){
+        try {
+            byte[] txtData = this.service.downloadCooopeativaTxt(id);
 
-        try{
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
-            String header = "00COOPERATIVA";
-            header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cooperativa_" + id + ".txt");
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/plain; charset=UTF-8");
 
-            outputStreamWriter.write(header+"\n");
-
-            String corpo = "02";
-            corpo += String.format("%-25.25s", cooperativa.getNome());
-            corpo += String.format("%-16.16s", cooperativa.getCnpj());
-            corpo += String.format("%-30.30s", cooperativa.getUsuario().getEmail());
-
-            outputStreamWriter.write(corpo+"\n");
-            List<MaterialPreco> listMaterial = this.materialPrecoService.buscarMaterialCooperativaValor(id);
-
-            String[] materiais = new String[]{"PET", "Ferro", "Papelão","Alumínio"};
-
-            for (String material : materiais){
-                String corpo2 = "03";
-                corpo2 += String.format("%-17.17s","Material-"+material);
-                Double valor = 0.0;
-                for(MaterialPreco m : listMaterial){
-                    if (m.getNome().equals(material)){
-                        valor = m.getVlrMaterial();
-                    }
-                        corpo2 += String.format("%3.2f",valor);
-                }
-                outputStreamWriter.write(corpo2+"\n");
-            }
-
-            String trailer = "01";
-            trailer += String.format("%10d",listMaterial.size() +1);
-
-            outputStreamWriter.write(trailer);
-            outputStreamWriter.close();
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("content-disposition","attachament; filename=registro-coleta.txt");
-            httpHeaders.add("content-type","text/csv; charset=UTF-8");
-            return ResponseEntity.status(200).headers(httpHeaders).body(byteArrayOutputStream.toByteArray());
+            return new ResponseEntity<>(txtData, headers, HttpStatus.OK);
         }
-        catch (IOException erro){
-            throw  new RuntimeException(erro);
+        catch (Exception e){
+            throw new ImportacaoExportacaoException(e.getMessage());
         }
     }
 }
