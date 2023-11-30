@@ -11,6 +11,7 @@ import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialColetadoRepository;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
+import com.projeto.sprint.projetosprint.util.DiasSemana;
 import com.projeto.sprint.projetosprint.util.FilaMaterialReciclado;
 import com.projeto.sprint.projetosprint.util.PilhaObj;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
@@ -89,7 +90,7 @@ public class MaterialColetadoService {
         return material;
     }
 
-    public Map<String, Double> reciclagemSemanal(int idCooperativa) {
+    public List<ChaveValor> reciclagemSemanal(int idCooperativa) {
         LocalDateTime dataAtual = LocalDateTime.now();
 
         List<MaterialColetado> materiais = this.repository.reciclagemSemanal(
@@ -108,9 +109,7 @@ public class MaterialColetadoService {
         for (DayOfWeek day : DayOfWeek.values()) {
             result.put(day.toString(), sumByDayOfWeek.getOrDefault(day, 0.0));
         }
-
-
-        return result;
+        return DiasSemana.converterDias(result);
     }
 
     public List<ChaveValor> porcentagemPorMaterial(int idCooperativa){
@@ -128,7 +127,7 @@ public class MaterialColetadoService {
             Double valorPorcentagem =  (valor * 100) / total;
             mapQuantidadeMaterial.put(map.getKey(), (double) Math.round(valorPorcentagem));
         }
-        return FilaMaterialReciclado.listMaterialMaisRecicladoPorDia(mapQuantidadeMaterial);
+        return FilaMaterialReciclado.converterList(mapQuantidadeMaterial);
     }
 
     public Double valorTotalUltimoMes(int idCondominio){

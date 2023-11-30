@@ -7,21 +7,17 @@ import java.util.List;
 import java.util.Map;
 
 public class FilaMaterialReciclado {
-    public static List<ChaveValor> listMaterialMaisRecicladoPorDia(Map<String, Double> mapMateriaisReciclado) {
-
-        String[] dias = new String[]{"DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SABÁDO"};
-
+    public static List<ChaveValor> converterList(Map<String, Double> mapMateriaisReciclado) {
         List<ChaveValor> listOrdenacao = new ArrayList<>();
-
-        FilaObj<String> filaDiasOrdenacao = new FilaObj<>(7);
-        for (int i = 0; i < 7; i++){
-            filaDiasOrdenacao.insert(dias[i]);
-        }
+        FilaObj<ChaveValor> filaOrdenacao = new FilaObj<>(7);
 
         for (Map.Entry<String, Double> map : mapMateriaisReciclado.entrySet()){
-            listOrdenacao.add(new ChaveValor(filaDiasOrdenacao.poll(),map.getValue()));
+            filaOrdenacao.insert(new ChaveValor(map.getKey(), map.getValue()));
         }
 
+        while (!filaOrdenacao.isEmpty()){
+            listOrdenacao.add(filaOrdenacao.poll());
+        }
         return listOrdenacao;
     }
 }
