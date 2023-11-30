@@ -2,10 +2,12 @@ package com.projeto.sprint.projetosprint.controller.materialPreco;
 
 import com.projeto.sprint.projetosprint.controller.materialPreco.dto.MaterialPrecoCadastroDTO;
 import com.projeto.sprint.projetosprint.controller.materialPreco.dto.MaterialPrecoResponseDTO;
+import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.service.material.MaterialPrecoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,6 +45,13 @@ public class MaterialPrecoController {
         return ResponseEntity.ok(
                 this.service.buscarMaterialPrecoPorIdCooperativa(id)
                 .stream().map(MaterialPrecoMapper :: of).toList()
+        );
+    }
+
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<List<MaterialPreco>> uploadTxt(@RequestParam MultipartFile file, @PathVariable int id){
+        return ResponseEntity.ok(
+                this.service.cadastrarMaterialPrecoUpload(file,id)
         );
     }
 }

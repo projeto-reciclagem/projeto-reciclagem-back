@@ -12,17 +12,24 @@ import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
 import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.TipoUsuario;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
-import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
+import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
+import com.projeto.sprint.projetosprint.util.ListaObj;
+import com.projeto.sprint.projetosprint.util.OrdenacaoCnpj;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 
-import java.util.List;
-import java.util.UUID;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+import java.io.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -110,9 +117,50 @@ public class CooperativaService {
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
 
-    public List<Cooperativa> listarCooperativasGenerico(){
+    public List<Cooperativa> listarCooperativas(){
         return this.repository.findAll();
     }
 
 
+    public byte[] downloadCooperativaCsv(int id){
+        List<Cooperativa> cooperativas = new ArrayList<>();
+
+        if (id != 0) cooperativas.add(buscaCoperativaId(id));
+        else cooperativas = listarCooperativas();
+
+        ListaObj<Cooperativa> lista = new ListaObj(cooperativas.size());
+        OrdenacaoCnpj.ordenarPorCnpj(cooperativas).stream()
+                .forEach(c -> lista.adiciona(c));
+
+        try{
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+
+            ICSVWriter csvWriter = new CSVWriterBuilder(outputStreamWriter)
+                    .withSeparator(';')
+                    .build();
+
+            String[] cabecalho = {"Id", "Nome", "Email", "CNPJ"};
+            csvWriter.writeNext(cabecalho);
+
+            for (int i = 0; i < lista.getTamanho(); i++){
+                Cooperativa c = lista.getElemento(i);
+                //GRAVANDO OS DADOS DA COOPERATIVA NO ARQUIVO
+                String[] linha = {
+                        c.getId().toString(),
+                        c.getNome(),
+                        c.getUsuario().getEmail(),
+                        c.getCnpj()
+                };
+                csvWriter.writeNext(linha);
+            }
+            csvWriter.close();
+            outputStreamWriter.close();
+            byte[] csvBytes = byteArrayOutputStream.toByteArray();
+            return csvBytes;
+        }
+        catch (IOException e) {
+            throw new ImportacaoExportacaoException(e.getMessage());
+        }
+    }
 }

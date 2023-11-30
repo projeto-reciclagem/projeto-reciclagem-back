@@ -139,6 +139,13 @@
 			<artifactId>gson</artifactId>
 			<version>2.10.1</version>
 		</dependency>
+
+		<!-- GERAÇÃO DO CSV-->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.8</version>
+        </dependency>
     </dependencies>
 
 	<build>
