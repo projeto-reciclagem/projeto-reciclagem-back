@@ -1,7 +1,6 @@
 package com.projeto.sprint.projetosprint.controller.materialColetado.dto;
 
-import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaResponseDTO;
-import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import lombok.Data;
 
 @Data

@@ -75,7 +75,7 @@ public class MaterialColetadoService {
                 idCooperativa,
                 dataAtual.minusWeeks(1),
                 dataAtual);
-        return totalColetado;
+        return totalColetado != null ? totalColetado : 0;
     }
 
     public MaterialUltimaSemana buscarMaterialMaisReciclado(int idCooperativa){
@@ -88,9 +88,14 @@ public class MaterialColetadoService {
         );
 
         MaterialUltimaSemana material = new MaterialUltimaSemana();
-        int i = materialMaisReciclado.indexOf(",");
-        material.setNome(materialMaisReciclado.substring(0, i));
-        material.setQntKgColetada(Double.valueOf(materialMaisReciclado.substring(i + 1 , materialMaisReciclado.length())));
+
+        if (materialMaisReciclado != null){
+
+            int i = materialMaisReciclado.indexOf(",");
+
+            material.setNome(materialMaisReciclado.substring(0, i));
+            material.setQntKgColetada(Double.valueOf(materialMaisReciclado.substring(i + 1 , materialMaisReciclado.length())));
+        }
 
         return material;
     }

@@ -1,7 +1,7 @@
-package com.projeto.sprint.projetosprint.controller.agenda;
+package com.projeto.sprint.projetosprint.controller.agendamento;
 
-import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaCriacaoDTO;
-import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaResponseDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.CondominioMapper;
 import com.projeto.sprint.projetosprint.controller.cooperativa.CooperativaMapper;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;

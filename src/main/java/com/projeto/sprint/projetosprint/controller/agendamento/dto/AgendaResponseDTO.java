@@ -1,10 +1,8 @@
-package com.projeto.sprint.projetosprint.controller.agenda.dto;
+package com.projeto.sprint.projetosprint.controller.agendamento.dto;
 
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
-import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
-import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;

@@ -1,8 +1,8 @@
 package com.projeto.sprint.projetosprint.service.agenda;
 
-import com.projeto.sprint.projetosprint.controller.agenda.AgendaMapper;
-import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaCriacaoDTO;
-import com.projeto.sprint.projetosprint.controller.agenda.dto.AgendaResponseDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.AgendaMapper;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;

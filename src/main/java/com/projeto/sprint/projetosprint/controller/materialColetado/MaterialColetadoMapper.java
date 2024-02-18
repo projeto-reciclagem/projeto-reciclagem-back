@@ -1,6 +1,6 @@
 package com.projeto.sprint.projetosprint.controller.materialColetado;
 
-import com.projeto.sprint.projetosprint.controller.agenda.AgendaMapper;
+import com.projeto.sprint.projetosprint.controller.agendamento.AgendaMapper;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 
