@@ -22,7 +22,6 @@ public class CooperativaAtualizarDTO {
     private String ImgUsuario;
 
 
-    @NotBlank
     @Size(min = 8, max = 40)
     private String senha;
 
