@@ -4,7 +4,6 @@ import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaAt
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
-import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
 import com.projeto.sprint.projetosprint.service.material.MaterialPrecoService;
@@ -15,12 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.http.MediaType;
 
-import java.io.*;
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -45,7 +41,7 @@ public class CooperativaController {
     //BUSCA A COOPERATIVA POR ID
     @GetMapping("/buscar/{id}")
     public ResponseEntity<CooperativaResponseDTO> buscarCooperativaPorId(@PathVariable int id) {
-        Cooperativa cooperativa = this.service.buscaCoperativaId(id);
+        Cooperativa cooperativa = this.service.buscarCoperativaId(id);
         return ResponseEntity.ok(CooperativaMapper.of(cooperativa));
     }
 
@@ -111,5 +107,11 @@ public class CooperativaController {
         catch (Exception e){
             throw new ImportacaoExportacaoException(e.getMessage());
         }
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<CooperativaResponseDTO> buscarCooperativaEmail(@RequestParam String email){
+        Cooperativa cooperativa = this.service.buscarCooperativaEmail(email);
+        return ResponseEntity.ok(CooperativaMapper.of(cooperativa));
     }
 }

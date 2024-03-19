@@ -4,10 +4,8 @@ import com.projeto.sprint.projetosprint.controller.materialPreco.dto.MaterialPre
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialPrecoRepository;
-import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
-import com.projeto.sprint.projetosprint.util.FilaObj;
 import com.projeto.sprint.projetosprint.util.PilhaMaterialPreco;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class MaterialPrecoService {
 
         if (id != 0) materialPreco.setId(id);
 
-        Cooperativa cooperativa = this.cooperativaService.buscaCoperativaId(materialPrecoDTO.getFkCooperativa());
+        Cooperativa cooperativa = this.cooperativaService.buscarCoperativaId(materialPrecoDTO.getFkCooperativa());
 
         materialPreco.setVlrMaterial(materialPrecoDTO.getVlrMaterial());
         materialPreco.setNome(materialPrecoDTO.getNome());
@@ -69,7 +67,7 @@ public class MaterialPrecoService {
 
             while(registro != null){
                 MaterialPreco novoMaterial = new MaterialPreco();
-                Cooperativa cooperativa = cooperativaService.buscaCoperativaId(id);
+                Cooperativa cooperativa = cooperativaService.buscarCoperativaId(id);
                 if (registro.equals("02")){
                     novoMaterial.setCooperativa(cooperativa);
                     int i = registro.indexOf(";");

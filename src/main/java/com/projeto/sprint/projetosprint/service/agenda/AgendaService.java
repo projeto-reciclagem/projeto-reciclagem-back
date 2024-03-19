@@ -37,7 +37,7 @@ public class AgendaService {
         agenda.setDatAgendamento(LocalDateTime.now());
 
         agenda.setCooperativa(
-                this.cooperativaService.buscaCoperativaId(dados.getFkCooperativa())
+                this.cooperativaService.buscarCoperativaId(dados.getFkCooperativa())
         );
 
         agenda.setCondominio(

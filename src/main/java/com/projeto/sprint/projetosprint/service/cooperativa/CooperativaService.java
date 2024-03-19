@@ -19,18 +19,14 @@ import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
-import com.projeto.sprint.projetosprint.service.material.MaterialPrecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
 import com.projeto.sprint.projetosprint.util.OrdenacaoCnpj;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +48,7 @@ public class CooperativaService {
         return this.repository.findAll().stream().map(CooperativaMapper :: of).toList();
     }
 
-    public Cooperativa buscaCoperativaId(int id){
+    public Cooperativa buscarCoperativaId(int id){
         return this.repository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
                         "Campo id inválido")
@@ -90,7 +86,7 @@ public class CooperativaService {
         Usuario usuario, infoUsuario;
 
         if (this.repository.existsById(id)) {
-            infoCooperativa = this.buscaCoperativaId(id);
+            infoCooperativa = this.buscarCoperativaId(id);
 
             cooperativa = CooperativaMapper.of(dados);
             cooperativa.setId(id);
@@ -132,7 +128,7 @@ public class CooperativaService {
     public byte[] downloadCooperativaCsv(int id){
         List<Cooperativa> cooperativas = new ArrayList<>();
 
-        if (id != 0) cooperativas.add(buscaCoperativaId(id));
+        if (id != 0) cooperativas.add(buscarCoperativaId(id));
         else cooperativas = listarCooperativas();
 
         ListaObj<Cooperativa> lista = new ListaObj(cooperativas.size());
@@ -172,7 +168,7 @@ public class CooperativaService {
     }
 
     public byte[] downloadCooopeativaTxt(int id){
-        Cooperativa cooperativa = buscaCoperativaId(id);
+        Cooperativa cooperativa = buscarCoperativaId(id);
 
         try{
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -215,6 +211,19 @@ public class CooperativaService {
         }
         catch (IOException e){
             throw new ImportacaoExportacaoException(e.getMessage());
+        }
+    }
+
+    public Cooperativa buscarCooperativaEmail(String email){
+        if (email.contains("@")){
+            return this.repository.findByUsuarioEmail(email).orElseThrow(
+                    () -> new EntidadeNaoEncontradaException(
+                            "Email inválido"
+                    )
+            );
+        }
+        else{
+            throw new EntidadeNaoEncontradaException("Email inválido");
         }
     }
 }
