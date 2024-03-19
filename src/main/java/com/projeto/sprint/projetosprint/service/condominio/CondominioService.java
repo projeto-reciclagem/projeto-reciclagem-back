@@ -125,4 +125,15 @@ public class CondominioService {
 
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
+
+    public Condominio buscarCondominioEmail(String email){
+        if(email.contains("@")){
+            return this.repository.findByUsuarioEmail(email).orElseThrow(
+                    () -> new EntidadeNaoEncontradaException("email inválido")
+            );
+        }
+        else{
+            throw new EntidadeNaoEncontradaException("Email inválido");
+        }
+    }
 }

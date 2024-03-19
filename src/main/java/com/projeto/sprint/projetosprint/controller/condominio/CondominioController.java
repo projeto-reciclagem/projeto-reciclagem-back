@@ -69,4 +69,10 @@ public class CondominioController {
         this.service.deletarCondominio(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorEmail(@RequestParam String email){
+        Condominio condominio = this.service.buscarCondominioEmail(email);
+        return ResponseEntity.ok(CondominioMapper.of(condominio));
+    }
 }
