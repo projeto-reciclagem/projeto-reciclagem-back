@@ -1,14 +1,10 @@
 package com.projeto.sprint.projetosprint.controller.materialColetado;
 
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ValorRecebidoMesDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.*;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.material.MaterialColetadoService;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
-import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/materiais/coletados")
@@ -120,5 +115,9 @@ public class MaterialColetadoController {
         }
     }
 
+    @GetMapping("/ultimas-coletas/mes/{id}")
+    public ResponseEntity<ColetasUltimoMesDTO> coletasUltimoMes(@PathVariable int id){
+        return ResponseEntity.ok(this.service.coletasUltimoMes(id));
+    }
 
 }

@@ -3,12 +3,8 @@ package com.projeto.sprint.projetosprint.service.material;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 import com.projeto.sprint.projetosprint.controller.materialColetado.MaterialColetadoMapper;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoCadastroDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoResponseDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialPorColetaDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ValorRecebidoMesDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.*;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
-import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
@@ -18,7 +14,6 @@ import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import com.projeto.sprint.projetosprint.util.*;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValor;
 import com.projeto.sprint.projetosprint.util.chaveValor.ChaveValorMapper;
-import com.projeto.sprint.projetosprint.util.data.AnoMes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.*;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -282,5 +279,29 @@ public class MaterialColetadoService {
         catch (IOException e) {
             throw new ImportacaoExportacaoException(e.getMessage());
         }
+    }
+
+    public ColetasUltimoMesDTO coletasUltimoMes(int id){
+
+        LocalDate atual = LocalDate.now();
+        LocalDateTime primeiroDia = atual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0);
+        LocalDateTime ultimoDia = atual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59);
+
+        Integer totalMesAtual = this.repository.materialColetadoMes(id,primeiroDia, ultimoDia);
+
+        LocalDate mesAnterior = atual.minusMonths(1);
+        primeiroDia = mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0);
+        ultimoDia = mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59);
+
+        Integer totalMesAnterior = this.repository.materialColetadoMes(id,primeiroDia, ultimoDia);
+
+        Double p = 0.0;
+
+        if (totalMesAnterior != 0) {
+            p = CalcularPorcentagem.porcentagemAumentou(totalMesAtual, totalMesAnterior);
+        }
+
+        ColetasUltimoMesDTO coletas = new ColetasUltimoMesDTO(totalMesAtual,totalMesAnterior,p.intValue());
+        return coletas;
     }
 }

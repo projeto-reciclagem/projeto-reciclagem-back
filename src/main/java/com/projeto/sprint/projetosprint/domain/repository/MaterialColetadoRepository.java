@@ -5,6 +5,7 @@ import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSem
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,4 +38,8 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
     @Query("SELECT mc FROM MaterialColetado mc WHERE mc.agenda.condominio.id = :idCondominio AND" +
             " mc.agenda.datAgendamento BETWEEN :endData AND :data")
     List<MaterialColetado> materialPorColetaAno(int idCondominio, LocalDateTime endData, LocalDateTime data);
+
+    @Query("SELECT COUNT(mc.id) FROM MaterialColetado mc WHERE mc.materialPreco.cooperativa.id = :id AND " +
+            " mc.agenda.datAgendamento BETWEEN :dtInicial AND :dtFinal")
+    Integer materialColetadoMes(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
 }
