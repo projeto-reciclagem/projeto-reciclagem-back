@@ -338,4 +338,30 @@ public class MaterialColetadoService {
 
         return coletas;
     }
+
+    public MaterialColetadoDTO materialMaisColetado(int id) {
+
+        LocalDate mesAtual = LocalDate.now();
+
+        String materiaisColetadosAtual = this.repository.materiaisMaisColetados(
+                id,
+                mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+        if (materiaisColetadosAtual == null) materiaisColetadosAtual = "Não houve coletas";
+
+        LocalDate mesAnterior = mesAtual.minusMonths(1);
+        String materiaisColetadosPassado = this.repository.materiaisMaisColetados(
+                id,
+                mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+
+        if (materiaisColetadosPassado == null) materiaisColetadosPassado = "Não houve coletas";
+
+        MaterialColetadoDTO material = new MaterialColetadoDTO(materiaisColetadosAtual, materiaisColetadosPassado);
+
+        return material;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.projeto.sprint.projetosprint.domain.repository;
 
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.MaterialColetadoDTO;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,4 +47,11 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
     @Query("SELECT SUM(mc.agenda.qtBag) FROM MaterialColetado mc WHERE mc.materialPreco.cooperativa.id = :id AND " +
             " mc.agenda.datAgendamento BETWEEN :dtInicial AND :dtFinal")
     Integer bagsColetadasMes(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
+
+    @Query("SELECT mc.materialPreco.nome FROM MaterialColetado mc " +
+            " WHERE mc.materialPreco.cooperativa.id = :id AND " +
+            " mc.agenda.datAgendamento BETWEEN :dtInicial AND :dtFinal" +
+            " GROUP BY mc.materialPreco.nome" +
+            " ORDER BY SUM(mc.qntKgColetado) DESC LIMIT 1")
+    String materiaisMaisColetados(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
 }
