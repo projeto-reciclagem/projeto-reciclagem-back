@@ -42,4 +42,8 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
     @Query("SELECT COUNT(mc.id) FROM MaterialColetado mc WHERE mc.materialPreco.cooperativa.id = :id AND " +
             " mc.agenda.datAgendamento BETWEEN :dtInicial AND :dtFinal")
     Integer materialColetadoMes(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
+
+    @Query("SELECT SUM(mc.agenda.qtBag) FROM MaterialColetado mc WHERE mc.materialPreco.cooperativa.id = :id AND " +
+            " mc.agenda.datAgendamento BETWEEN :dtInicial AND :dtFinal")
+    Integer bagsColetadasMes(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
 }

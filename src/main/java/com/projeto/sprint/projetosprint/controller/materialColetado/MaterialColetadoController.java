@@ -120,4 +120,8 @@ public class MaterialColetadoController {
         return ResponseEntity.ok(this.service.coletasUltimoMes(id));
     }
 
+    @GetMapping("/quantidade-bags/mes/{id}")
+    public ResponseEntity<ColetasUltimoMesDTO> quantidadeBagsUltimoMes(@PathVariable int id){
+        return ResponseEntity.ok(this.service.quantidadeBagsUltimoMes(id));
+    }
 }

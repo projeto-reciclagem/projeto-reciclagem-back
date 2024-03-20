@@ -283,17 +283,19 @@ public class MaterialColetadoService {
 
     public ColetasUltimoMesDTO coletasUltimoMes(int id){
 
-        LocalDate atual = LocalDate.now();
-        LocalDateTime primeiroDia = atual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0);
-        LocalDateTime ultimoDia = atual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59);
+        LocalDate mesAtual = LocalDate.now();
+        Integer totalMesAtual = this.repository.materialColetadoMes(
+                id,
+                mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
 
-        Integer totalMesAtual = this.repository.materialColetadoMes(id,primeiroDia, ultimoDia);
-
-        LocalDate mesAnterior = atual.minusMonths(1);
-        primeiroDia = mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0);
-        ultimoDia = mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59);
-
-        Integer totalMesAnterior = this.repository.materialColetadoMes(id,primeiroDia, ultimoDia);
+        LocalDate mesAnterior = mesAtual.minusMonths(1);
+        Integer totalMesAnterior = this.repository.materialColetadoMes(
+                id,
+                mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
 
         Double p = 0.0;
 
@@ -302,6 +304,38 @@ public class MaterialColetadoService {
         }
 
         ColetasUltimoMesDTO coletas = new ColetasUltimoMesDTO(totalMesAtual,totalMesAnterior,p.intValue());
+        return coletas;
+    }
+
+    public ColetasUltimoMesDTO quantidadeBagsUltimoMes(int id){
+
+        LocalDate mesAtual = LocalDate.now();
+
+        Integer bgsMesAtual = this.repository.bagsColetadasMes(
+                id,
+                mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+        bgsMesAtual = bgsMesAtual == null ? 0 : bgsMesAtual;
+
+
+        LocalDate mesAnterior = mesAtual.minusMonths(1);
+
+        Integer bgsMesAnterior = this.repository.bagsColetadasMes(
+                id,
+                mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+        bgsMesAnterior = bgsMesAnterior == null ? 0 : bgsMesAnterior;
+
+        Double p = 0.0;
+
+        if (bgsMesAnterior != 0) {
+            p = CalcularPorcentagem.porcentagemAumentou(bgsMesAtual, bgsMesAnterior);
+        }
+
+        ColetasUltimoMesDTO coletas = new ColetasUltimoMesDTO(bgsMesAtual,bgsMesAnterior,p.intValue());
+
         return coletas;
     }
 }
