@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ColetasUltimoMesDTO {
-    private Integer qntColetaMesAtual;
-    private Integer qntColetaMesPasado;
+    private Integer qntMesAtual;
+    private Integer qntMesAnterior;
     private Integer vlrPorcentagemDiferenca;
 }
