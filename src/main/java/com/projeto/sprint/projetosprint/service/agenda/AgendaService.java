@@ -3,18 +3,22 @@ package com.projeto.sprint.projetosprint.service.agenda;
 import com.projeto.sprint.projetosprint.controller.agendamento.AgendaMapper;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
+import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ColetasUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
+import com.projeto.sprint.projetosprint.util.CalcularPorcentagem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +119,32 @@ public class AgendaService {
         if (agenda.isEmpty()) return 0;
 
         return (int) ChronoUnit.DAYS.between(agenda.get().getDatRetirada().toLocalDate(), LocalDate.now());
+    }
+
+    public CanceladosUltimoMesDTO totalCanceladoMes(int id){
+        LocalDate mesAtual = LocalDate.now();
+
+        Integer canceladoMesAtual = this.repository.canceladoMes(
+            id,
+            mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+            mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+
+        LocalDate mesAnterior = mesAtual.minusMonths(1);
+        Integer canceladoMesAnterior = this.repository.canceladoMes(
+            id,
+            mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+            mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+
+        Double p = 0.0;
+
+        if (canceladoMesAnterior != 0) {
+            p = CalcularPorcentagem.porcentagemAumentou(canceladoMesAtual, canceladoMesAnterior);
+        }
+
+        return new CanceladosUltimoMesDTO(canceladoMesAtual, canceladoMesAnterior, p.intValue());
+
     }
 
 }
