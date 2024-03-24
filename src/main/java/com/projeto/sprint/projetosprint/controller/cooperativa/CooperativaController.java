@@ -110,8 +110,8 @@ public class CooperativaController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<CooperativaResponseDTO> buscarCooperativaEmail(@RequestParam String email){
-        Cooperativa cooperativa = this.service.buscarCooperativaEmail(email);
+    public ResponseEntity<CooperativaResponseDTO> buscarCooperativaByToken(@RequestHeader(HttpHeaders.COOKIE) String auth){
+        Cooperativa cooperativa = this.service.buscarCooperativa(auth.replace("auth=", ""));
         return ResponseEntity.ok(CooperativaMapper.of(cooperativa));
     }
 }

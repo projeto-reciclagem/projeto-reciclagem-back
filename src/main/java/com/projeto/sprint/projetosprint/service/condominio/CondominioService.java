@@ -17,6 +17,7 @@ import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
 import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeDuplicadaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
+import com.projeto.sprint.projetosprint.infra.security.jwt.GerenciadorTokenJwt;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
@@ -38,6 +39,8 @@ public class CondominioService {
     private final EmailConteudoService emailService;
 
     private  final EnderecoService enderecoService;
+
+    private final GerenciadorTokenJwt tokenJwt;
 
 
     public List<CondominioResponseDTO> listarCondominio(){
@@ -126,14 +129,13 @@ public class CondominioService {
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
 
-    public Condominio buscarCondominioEmail(String email){
-        if(email.contains("@")){
-            return this.repository.findByUsuarioEmail(email).orElseThrow(
-                    () -> new EntidadeNaoEncontradaException("email inválido")
-            );
-        }
-        else{
-            throw new EntidadeNaoEncontradaException("Email inválido");
-        }
+    public Condominio buscarCondominio(String auth) {
+        String email = tokenJwt.getUsernameFromToken(auth);
+
+        return this.repository.findByUsuarioEmail(email).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        "Email inválido"
+                )
+        );
     }
 }
