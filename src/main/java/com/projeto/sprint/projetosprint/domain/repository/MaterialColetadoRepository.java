@@ -54,4 +54,10 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
             " GROUP BY mc.materialPreco.nome" +
             " ORDER BY SUM(mc.qntKgColetado) DESC LIMIT 1")
     String materiaisMaisColetados(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
+
+    @Query("SELECT COUNT(mc.agenda.id) FROM MaterialColetado mc " +
+            " WHERE mc.materialPreco.cooperativa.id = :id AND " +
+            " mc.agenda.datRetirada BETWEEN :dtInicial AND :dtFinal AND " +
+            " mc.agenda.status = 1")
+    Integer quantidadeColetadoDiario(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
 }

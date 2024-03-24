@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -128,5 +129,12 @@ public class MaterialColetadoController {
     @GetMapping("/mais-coletados/mes/{id}")
     public ResponseEntity<MaterialColetadoDTO> materialMaisColetado(@PathVariable int id){
         return ResponseEntity.ok(this.service.materialMaisColetado(id));
+    }
+
+    @GetMapping("/quantidade-coletas/diario/{id}")
+    public ResponseEntity<List<ColetaDiariaDTO>> quantidadeColetaDiario(@PathVariable int id,
+                                                                        @RequestParam LocalDate dataInicial,
+                                                                        @RequestParam LocalDate dataFinal){
+        return ResponseEntity.ok(this.service.quantidadeColetaDiario(id, dataInicial, dataFinal));
     }
 }

@@ -9,6 +9,8 @@ import com.projeto.sprint.projetosprint.domain.entity.material.MaterialColetado;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.entity.material.MaterialUltimaSemana;
 import com.projeto.sprint.projetosprint.domain.repository.MaterialColetadoRepository;
+import com.projeto.sprint.projetosprint.exception.DataInvalidaException;
+import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import com.projeto.sprint.projetosprint.util.*;
@@ -362,6 +364,29 @@ public class MaterialColetadoService {
         MaterialColetadoDTO material = new MaterialColetadoDTO(materiaisColetadosAtual, materiaisColetadosPassado);
 
         return material;
+    }
+
+    public List<ColetaDiariaDTO> quantidadeColetaDiario(int id, LocalDate dataInicial, LocalDate dataFinal){
+
+        List<ColetaDiariaDTO> listaColeta = new ArrayList<ColetaDiariaDTO>();
+        if (dataInicial.equals(dataFinal.minusDays(7))) {
+            LocalDate data = dataInicial;
+            for (int i = 0; i <= 7; i++) {
+
+                LocalDateTime dataHorInicial = data.atTime(0,0,0);
+                LocalDateTime dataHorFinal =  data.atTime(23,59,59);
+
+                Integer totalColetado = this.repository.quantidadeColetadoDiario(id, dataHorInicial, dataHorFinal);
+
+                listaColeta.add(new ColetaDiariaDTO(data, totalColetado));
+
+                data = data.plusDays(1);
+            }
+            return listaColeta;
+        } else {
+            throw new DataInvalidaException("Intervalo de datas inválido");
+        }
+
     }
 
 }
