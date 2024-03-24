@@ -8,23 +8,11 @@ import org.hibernate.validator.constraints.br.CNPJ;
 
 @Data
 public class CooperativaAtualizarDTO {
-    @NotBlank
     private String nome;
-
-    @NotBlank
-    @CNPJ
     private String cnpj;
-
-    @NotBlank
-    @Email
     private String email;
-
     private String ImgUsuario;
-
-
-    @Size(min = 8, max = 40)
     private String senha;
-
     private String cep;
     private String logradouro;
     private String bairro;

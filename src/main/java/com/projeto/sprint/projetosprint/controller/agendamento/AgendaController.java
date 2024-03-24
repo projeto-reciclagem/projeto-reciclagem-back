@@ -79,9 +79,13 @@ public class AgendaController {
     }
 
     @GetMapping("/historico")
-    public ResponseEntity<List<AgendaResponseDTO>> historicoAgendamento(@RequestParam int idCondominio, @RequestParam int idCooperativa){
+    public ResponseEntity<List<AgendaResponseDTO>> historicoAgendamento(@RequestParam int idCondominio,
+                                                                        @RequestParam int idCooperativa,
+                                                                        @RequestParam String nomeCliente,
+                                                                        @RequestParam String statusAgendamento)
+    {
         return ResponseEntity.ok(
-                this.service.historicoDePedidos(idCondominio, idCooperativa)
+                this.service.historicoDePedidos(idCondominio, idCooperativa, nomeCliente, statusAgendamento)
                         .stream().map(AgendaMapper :: of).toList()
         );
     }

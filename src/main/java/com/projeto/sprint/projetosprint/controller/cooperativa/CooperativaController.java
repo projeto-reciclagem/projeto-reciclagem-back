@@ -56,7 +56,7 @@ public class CooperativaController {
     }
 
     //ATUALIZANDO INFORMAÇÕES DA COOPERATIVA
-    @PutMapping("/atualizar/{id}")
+    @PatchMapping("/atualizar/{id}")
     public ResponseEntity<Void> atualizarCooperativa(@PathVariable int id,
                                                      @Valid @RequestBody CooperativaAtualizarDTO dados){
 

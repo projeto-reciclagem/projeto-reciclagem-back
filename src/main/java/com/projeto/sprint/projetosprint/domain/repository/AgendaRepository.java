@@ -28,7 +28,16 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
     Integer condominiosAtendidosUltimaSemana(int idCooperativa, LocalDateTime endData, LocalDateTime data);
 
     List<Agenda>findByCondominioId(int id);
-    List<Agenda>findByCooperativaId(int id);
+
+    @Query("SELECT a FROM Agenda a WHERE a.cooperativa.id = :id" +
+            " AND a.condominio.nome LIKE CONCAT('%',:nomeCliente,'%')" +
+            " OR (:status IS NULL AND a.status = :status)")
+    List<Agenda>findByCooperativa(int id, String nomeCliente, Status status);
+
+    @Query("SELECT a FROM Agenda a WHERE a.condominio.id = :id" +
+            " AND a.condominio.nome LIKE CONCAT('%',:nomeCliente,'%')" +
+            " AND (:status IS NULL AND a.status = :status)")
+    List<Agenda>findByCondominio(int id, String nomeCliente, Status status);
 
     @Query("SELECT COUNT(a) FROM Agenda a WHERE a.condominio.id = :idCondominio AND" +
             " a.datAgendamento BETWEEN :endData AND :data")

@@ -91,12 +91,16 @@ public class AgendaService {
         return this.repository.condominiosAtendidosUltimaSemana(idCooperativa, datSemanaPassada, datAtual);
     }
 
-    public List<Agenda> historicoDePedidos(int idCondominio, int idCooperativa){
-        if(idCondominio != 0){
-            return this.repository.findByCondominioId(idCondominio);
+    public List<Agenda> historicoDePedidos(int idCondominio, int idCooperativa, String nomeCliente, String statusAgendamento) {
+        Status status = null;
+        if (!statusAgendamento.isEmpty()) {
+            status = Status.valueOf(statusAgendamento);
         }
-        else if (idCooperativa != 0){
-            return this.repository.findByCooperativaId(idCooperativa);
+
+        if (idCondominio != 0) {
+            return this.repository.findByCondominio(idCondominio, nomeCliente, status);
+        } else if (idCooperativa != 0) {
+            return this.repository.findByCooperativa(idCooperativa, nomeCliente, status);
         }
         return null;
     }
