@@ -103,4 +103,9 @@ public class AgendaController {
     public ResponseEntity<CanceladosUltimoMesDTO> totalCanceladoMes(@PathVariable int id){
         return ResponseEntity.ok(this.service.totalCanceladoMes(id));
     }
+
+    @GetMapping("/historico/{id}")
+    public ResponseEntity<AgendaResponseDTO> buscarAgendamentoPorId(@PathVariable int id){
+        return ResponseEntity.ok(AgendaMapper.of(this.service.buscarAgendaPorId(id)));
+    }
 }

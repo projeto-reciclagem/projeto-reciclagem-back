@@ -144,7 +144,6 @@ public class AgendaService {
         }
 
         return new CanceladosUltimoMesDTO(canceladoMesAtual, canceladoMesAnterior, p.intValue());
-
     }
 
 }
