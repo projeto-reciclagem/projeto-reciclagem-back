@@ -17,6 +17,7 @@ import com.projeto.sprint.projetosprint.domain.repository.MaterialPrecoRepositor
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
+import com.projeto.sprint.projetosprint.infra.security.jwt.GerenciadorTokenJwt;
 import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
@@ -42,6 +43,7 @@ public class CooperativaService {
     private final UsuarioService usuarioService;
     private final EnderecoService enderecoService;
     private final EmailConteudoService emailService;
+    private final GerenciadorTokenJwt tokenJwt;
 
 
     public List<CooperativaResponseDTO> listarCooperativa(){
@@ -225,5 +227,15 @@ public class CooperativaService {
         else{
             throw new EntidadeNaoEncontradaException("Email inválido");
         }
+    }
+
+    public Cooperativa buscarCooperativa(String auth) {
+        String email = tokenJwt.getUsernameFromToken(auth);
+
+        return this.repository.findByUsuarioEmail(email).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        "Email inválido"
+                )
+        );
     }
 }

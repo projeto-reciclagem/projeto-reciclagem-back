@@ -8,6 +8,7 @@ import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -71,8 +72,8 @@ public class CondominioController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorEmail(@RequestParam String email){
-        Condominio condominio = this.service.buscarCondominioEmail(email);
+    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorToken(@RequestHeader(HttpHeaders.COOKIE) String auth){
+        Condominio condominio = this.service.buscarCondominio(auth.replace("auth=", ""));
         return ResponseEntity.ok(CondominioMapper.of(condominio));
     }
 }
