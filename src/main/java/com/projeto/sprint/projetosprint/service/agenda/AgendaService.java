@@ -146,4 +146,10 @@ public class AgendaService {
         return new CanceladosUltimoMesDTO(canceladoMesAtual, canceladoMesAnterior, p.intValue());
     }
 
+    public void atualizarStatusAgendamento(int id, Status status){
+        Agenda agenda = this.buscarAgendaPorId(id);
+        agenda.setStatus(status);
+        this.repository.save(agenda);
+    }
+
 }

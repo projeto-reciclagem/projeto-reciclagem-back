@@ -6,6 +6,7 @@ import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaRespons
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
 import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ColetasUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
+import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -107,5 +108,11 @@ public class AgendaController {
     @GetMapping("/historico/{id}")
     public ResponseEntity<AgendaResponseDTO> buscarAgendamentoPorId(@PathVariable int id){
         return ResponseEntity.ok(AgendaMapper.of(this.service.buscarAgendaPorId(id)));
+    }
+
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<Void> atualizarStatusAgendamento(@PathVariable int id, @RequestParam Status status) {
+        this.service.atualizarStatusAgendamento(id, status);
+        return ResponseEntity.status(200).build();
     }
 }
