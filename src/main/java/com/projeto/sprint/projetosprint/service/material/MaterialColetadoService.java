@@ -122,14 +122,20 @@ public class MaterialColetadoService {
     }
 
     public List<ChaveValor> porcentagemPorMaterial(int idCooperativa){
-        List<MaterialColetadoResponseDTO> listMateriais = this.listarMaterialColetadoCooperativa(idCooperativa);
+        LocalDate mes = LocalDate.now();
+        List<MaterialColetadoResponseDTO> listMateriais = this.repository.findByAgendaCooperativaIdMes(idCooperativa,
+                mes.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mes.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        ).stream().map(MaterialColetadoMapper :: of).toList();
 
         Map<String, Double> mapQuantidadeMaterial = listMateriais.stream()
                 .collect(Collectors.groupingBy(material -> material.getNome(),
                         Collectors.summingDouble(material -> material.getQntKgColetado())
                 ));
 
-        Double total = this.repository.quantidadeKgTotal(idCooperativa);
+        Double total = this.repository.quantidadeKgTotal(idCooperativa,
+                mes.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mes.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59));
 
         for (Map.Entry<String, Double> map : mapQuantidadeMaterial.entrySet()) {
             Double valor = map.getValue();

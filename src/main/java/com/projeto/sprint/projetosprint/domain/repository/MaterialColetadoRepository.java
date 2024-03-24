@@ -29,8 +29,9 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
             "WHERE mc.agenda.cooperativa.id = :idCooperativa AND mc.agenda.datAgendamento BETWEEN :endData AND :data ")
     List<MaterialColetado> reciclagemSemanal(int idCooperativa, LocalDateTime endData, LocalDateTime data);
 
-    @Query("SELECT SUM(mc.qntKgColetado) FROM MaterialColetado mc WHERE mc.agenda.cooperativa.id = :idCooperativa")
-    Double quantidadeKgTotal(int idCooperativa);
+    @Query("SELECT SUM(mc.qntKgColetado) FROM MaterialColetado mc WHERE mc.agenda.cooperativa.id = :idCooperativa AND " +
+            " mc.agenda.datRetirada BETWEEN :dtInicial AND :dtFinal")
+    Double quantidadeKgTotal(int idCooperativa, LocalDateTime dtInicial, LocalDateTime dtFinal);
 
     @Query("SELECT SUM(mc.qntKgColetado) FROM MaterialColetado mc WHERE mc.agenda.condominio.id = :idCondominio AND" +
             " mc.agenda.datAgendamento BETWEEN :endData AND :data")
@@ -60,4 +61,8 @@ public interface MaterialColetadoRepository extends JpaRepository<MaterialColeta
             " mc.agenda.datRetirada BETWEEN :dtInicial AND :dtFinal AND " +
             " mc.agenda.status = 1")
     Integer quantidadeColetadoDiario(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
+
+    @Query("SELECT mc FROM MaterialColetado mc " +
+            "WHERE mc.materialPreco.cooperativa.id = :id AND mc.agenda.datAgendamento BETWEEN :dtInicial AND :dtFinal")
+    List<MaterialColetado> findByAgendaCooperativaIdMes(int id, LocalDateTime dtInicial, LocalDateTime dtFinal);
 }
