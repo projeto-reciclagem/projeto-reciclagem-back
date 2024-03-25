@@ -4,7 +4,6 @@ package com.projeto.sprint.projetosprint.controller.agendamento;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ColetasUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
@@ -94,6 +93,13 @@ public class AgendaController {
     public ResponseEntity<Integer> coletasSolicitadasUltimoMes(@PathVariable int id){
         return ResponseEntity.ok(
             this.service.coletasSolicitadasUltimoMes(id)
+        );
+    }
+
+    @GetMapping("/coletas-realizadas/mes/{id}")
+    public ResponseEntity<Integer> coletasRealizadasUltimoMes(@PathVariable int id){
+        return ResponseEntity.ok(
+                this.service.coletasRealizadasUltimoMes(id)
         );
     }
 

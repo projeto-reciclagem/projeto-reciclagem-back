@@ -5,7 +5,6 @@ import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +26,6 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
             " a.datAgendamento BETWEEN :endData AND :data")
     Integer condominiosAtendidosUltimaSemana(int idCooperativa, LocalDateTime endData, LocalDateTime data);
 
-    List<Agenda>findByCondominioId(int id);
-
     @Query("SELECT a FROM Agenda a WHERE a.cooperativa.id = :id" +
             " AND a.condominio.nome LIKE CONCAT('%',:nomeCliente,'%')" +
             " OR (:status IS NULL AND a.status = :status)")
@@ -42,6 +39,10 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
     @Query("SELECT COUNT(a) FROM Agenda a WHERE a.condominio.id = :idCondominio AND" +
             " a.datAgendamento BETWEEN :endData AND :data")
     Integer countByCondominioId(int idCondominio, LocalDateTime endData, LocalDateTime data);
+
+    @Query("SELECT COUNT(a) FROM Agenda a WHERE a.cooperativa.id = :idCooperativa AND " +
+            "a.datAgendamento BETWEEN :endData AND :data")
+    Integer countByCooperativaId(int idCooperativa, LocalDateTime endData, LocalDateTime data);
 
     @Query("SELECT a FROM Agenda a WHERE a.condominio.id = :idCondominio AND a.status = :status " +
             "ORDER BY a.datRetirada DESC " +

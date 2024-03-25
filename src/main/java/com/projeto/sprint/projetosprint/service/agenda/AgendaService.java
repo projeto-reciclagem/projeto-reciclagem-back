@@ -4,7 +4,6 @@ import com.projeto.sprint.projetosprint.controller.agendamento.AgendaMapper;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
-import com.projeto.sprint.projetosprint.controller.materialColetado.dto.ColetasUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
@@ -113,6 +112,14 @@ public class AgendaService {
         LocalDateTime dataAtual = LocalDateTime.now();
 
         return this.repository.countByCondominioId(idCondominio,
+                dataAtual.minusMonths(1),
+                dataAtual);
+    }
+
+    public Integer coletasRealizadasUltimoMes(int idCooperativa){
+        LocalDateTime dataAtual = LocalDateTime.now();
+
+        return this.repository.countByCooperativaId(idCooperativa,
                 dataAtual.minusMonths(1),
                 dataAtual);
     }
