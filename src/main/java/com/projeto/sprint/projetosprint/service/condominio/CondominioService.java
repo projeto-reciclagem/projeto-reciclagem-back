@@ -125,12 +125,13 @@ public class CondominioService {
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
 
-    public void deletarCondominio(Integer id){
-        if(this.repository.existsById(id)){
-            this.repository.deleteById(id);
+    public void deletarCondominio(Condominio condominio){
+        if(this.repository.existsById(condominio.getId())){
+            this.repository.deleteById(condominio.getId());
         }
-
-        throw new EntidadeNaoEncontradaException("Campo id inválido");
+        else{
+            throw new EntidadeNaoEncontradaException("Campo id inválido");
+        }
     }
 
     public Condominio buscarCondominio(String auth) {

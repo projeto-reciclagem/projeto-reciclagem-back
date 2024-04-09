@@ -34,9 +34,9 @@ public class CondominioController {
     }
 
     //Buscando condominio por ID
-    @GetMapping("/buscar/{id}")
-    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorId(@PathVariable int id){
-        Condominio condominio = this.service.buscaCondominioId(id);
+    @GetMapping("/buscar")
+    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorId(@RequestHeader(HttpHeaders.COOKIE) String auth) {
+        Condominio condominio = this.service.buscarCondominio(auth.replace("auth=", ""));
         return ResponseEntity.ok(CondominioMapper.of(condominio));
     }
 
@@ -56,17 +56,20 @@ public class CondominioController {
     }
 
     //Atualizar os dados do condominio
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<CondominioResponseDTO> condominio(@PathVariable int id,
+    @PutMapping("/atualizar")
+    public ResponseEntity<CondominioResponseDTO> condominio(@RequestHeader(HttpHeaders.COOKIE) String auth,
                                                 @Valid @RequestBody CondominioAtualizarDTO dados){
 
-        Condominio condominio = this.service.atualizarCondominio(dados, id);
+        Condominio condominioAtual = this.service.buscarCondominio(auth.replace("auth=", ""));
+
+        Condominio condominio = this.service.atualizarCondominio(dados, condominioAtual.getId());
         return ResponseEntity.ok(CondominioMapper.of(condominio));
     }
 
-    @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarCondominioPorId(@PathVariable int id){
-        this.service.deletarCondominio(id);
+    @DeleteMapping("/deletar")
+    public ResponseEntity<Void> deletarCondominioPorId(@RequestHeader(HttpHeaders.COOKIE) String auth){
+        Condominio condominio = this.service.buscarCondominio(auth.replace("auth=", ""));
+        this.service.deletarCondominio(condominio);
         return ResponseEntity.noContent().build();
     }
 

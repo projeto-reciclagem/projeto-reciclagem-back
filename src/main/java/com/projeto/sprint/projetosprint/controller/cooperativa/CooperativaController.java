@@ -56,19 +56,20 @@ public class CooperativaController {
     }
 
     //ATUALIZANDO INFORMAÇÕES DA COOPERATIVA
-    @PatchMapping("/atualizar/{id}")
-    public ResponseEntity<Void> atualizarCooperativa(@PathVariable int id,
+    @PatchMapping("/atualizar")
+    public ResponseEntity<Void> atualizarCooperativa(@RequestHeader(HttpHeaders.COOKIE) String auth,
                                                      @Valid @RequestBody CooperativaAtualizarDTO dados){
-
-        this.service.atualizarCooperativa(dados, id);
+        Cooperativa cooperativa = this.service.buscarCooperativa(auth.replace("auth=", ""));
+        this.service.atualizarCooperativa(dados, cooperativa.getId());
         return ResponseEntity.noContent().build();
     }
 
     //DELETANDO UMA COOPERATIVA
-    @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarCooperativaPorId(@PathVariable int id){
+    @DeleteMapping("/deletar")
+    public ResponseEntity<Void> deletarCooperativaPorId(@RequestHeader(HttpHeaders.COOKIE) String auth){
+        Cooperativa cooperativa = this.service.buscarCooperativa(auth.replace("auth=", ""));
 
-        this.service.deletarCooperativa(id);
+        this.service.deletarCooperativa(cooperativa.getId());
         return ResponseEntity.noContent().build();
     }
     

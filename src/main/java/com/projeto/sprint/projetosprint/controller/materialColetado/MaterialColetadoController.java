@@ -137,4 +137,5 @@ public class MaterialColetadoController {
                                                                         @RequestParam LocalDate dataFinal){
         return ResponseEntity.ok(this.service.quantidadeColetaDiario(id, dataInicial, dataFinal));
     }
+    
 }
