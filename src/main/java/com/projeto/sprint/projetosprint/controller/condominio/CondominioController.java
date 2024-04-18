@@ -72,10 +72,4 @@ public class CondominioController {
         this.service.deletarCondominio(condominio);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/buscar")
-    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorToken(@RequestHeader(HttpHeaders.COOKIE) String auth){
-        Condominio condominio = this.service.buscarCondominio(auth.replace("auth=", ""));
-        return ResponseEntity.ok(CondominioMapper.of(condominio));
-    }
 }
