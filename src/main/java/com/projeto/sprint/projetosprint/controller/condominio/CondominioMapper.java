@@ -41,6 +41,7 @@ public class CondominioMapper {
                 condominioResponseDTO.setBairro(endereco.getBairro());
                 condominioResponseDTO.setCidade(endereco.getCidade());
                 condominioResponseDTO.setComplemento(endereco.getComplemento());
+                condominioResponseDTO.setNumero(endereco.getNumero());
                 condominioResponseDTO.setLatitude(endereco.getLatitude());
                 condominioResponseDTO.setLongitude(endereco.getLongitude());
             }
@@ -72,6 +73,7 @@ public class CondominioMapper {
         endereco.setLogradouro(condominioDTO.getLogradouro());
         endereco.setCidade(condominioDTO.getCidade());
         endereco.setComplemento(condominioDTO.getComplemento());
+        endereco.setNumero(condominioDTO.getNumero());
 
         usuario.setEndereco(endereco);
         condominio.setUsuario(usuario);

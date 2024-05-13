@@ -17,4 +17,5 @@ public class CooperativaResponseDTO {
     private String complemento;
     private String latitude;
     private String longitude;
+    private String numero;
 }

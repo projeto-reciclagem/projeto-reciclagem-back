@@ -95,8 +95,9 @@ public class CooperativaService {
 
             usuario = cooperativa.getUsuario();
             usuario.setId(infoCooperativa.getUsuario().getId());
-            infoUsuario = this.usuarioService.buscarUsuarioId(usuario.getId());
+            infoUsuario = this.usuarioService.buscarUsuarioId(usuario.  getId());
 
+            System.out.println(infoUsuario.getEndereco().getNumero());
             if (usuario.getSenha() == null){
                 usuario.setSenha(infoUsuario.getSenha());
             }
