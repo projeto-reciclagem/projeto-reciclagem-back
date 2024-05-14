@@ -60,7 +60,7 @@ public class CooperativaController {
     public ResponseEntity<Void> atualizarCooperativa(@RequestHeader(HttpHeaders.COOKIE) String auth,
                                                      @Valid @RequestBody CooperativaAtualizarDTO dados){
         Cooperativa cooperativa = this.service.buscarCooperativa(auth.replace("auth=", ""));
-        this.service.atualizarCooperativa(dados, cooperativa.getId());
+        this.service.atualizarCooperativa(dados, cooperativa);
         return ResponseEntity.noContent().build();
     }
 

@@ -79,12 +79,15 @@ public class UsuarioService {
     }
 
     public void atualizarUsuario(Usuario usuario){
+        Usuario dadosOriginais = buscarUsuarioId(usuario.getId());
 
         this.repository.atualizarInfo(
                 usuario.getEmail(),
-                passwordEncoder.encode(usuario.getSenha()),
+                usuario.getSenha() == null || usuario.getSenha().isEmpty()
+                        ? dadosOriginais.getSenha()
+                        : passwordEncoder.encode(usuario.getSenha()),
                 usuario.getEndereco(),
-                usuario.getImgUsuario(),
+                usuario.getImgUsuario() == null ? dadosOriginais.getImgUsuario() : usuario.getImgUsuario(),
                 usuario.getId()
         );
     }

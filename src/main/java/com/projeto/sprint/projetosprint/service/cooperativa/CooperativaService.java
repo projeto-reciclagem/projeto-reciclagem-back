@@ -24,6 +24,7 @@ import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
 import com.projeto.sprint.projetosprint.util.OrdenacaoCnpj;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
@@ -44,6 +45,7 @@ public class CooperativaService {
     private final EnderecoService enderecoService;
     private final EmailConteudoService emailService;
     private final GerenciadorTokenJwt tokenJwt;
+    private final PasswordEncoder passwordEncoder;
 
 
     public List<CooperativaResponseDTO> listarCooperativa(){
@@ -67,57 +69,44 @@ public class CooperativaService {
         Cooperativa cooperativa = CooperativaMapper.of(dados);
         cooperativa.setUsuario(usuario);
 
-        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
-                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
-                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
-
-        EmailBoasVindas destinatario = new EmailBoasVindas(
-                dados.getNome(), dados.email);
-
-        this.emailService.adicionarDestinatario(
-                idEmail, destinatario);
-
-        this.emailService.publicarEmail(idEmail);
+//        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
+//                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
+//                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
+//
+//        EmailBoasVindas destinatario = new EmailBoasVindas(
+//                dados.getNome(), dados.email);
+//
+//        this.emailService.adicionarDestinatario(
+//                idEmail, destinatario);
+//
+//        this.emailService.publicarEmail(idEmail);
 
         return this.repository.save(cooperativa);
     }
 
-    public Cooperativa atualizarCooperativa(CooperativaAtualizarDTO dados, Integer id){
+    public void atualizarCooperativa(CooperativaAtualizarDTO dadosParaAtualizacao, Cooperativa dadosOriginais){
+        Cooperativa cooperativaAtualizada;
+        Usuario usuarioAtualizado, usuarioOriginal;
 
-        Cooperativa infoCooperativa, cooperativa;
-        Usuario usuario, infoUsuario;
+        cooperativaAtualizada = CooperativaMapper.of(dadosParaAtualizacao);
+        cooperativaAtualizada.setId(dadosOriginais.getId());
 
-        if (this.repository.existsById(id)) {
-            infoCooperativa = this.buscarCoperativaId(id);
+        usuarioAtualizado = cooperativaAtualizada.getUsuario();
+        usuarioAtualizado.setId(dadosOriginais.getUsuario().getId());
 
-            cooperativa = CooperativaMapper.of(dados);
-            cooperativa.setId(id);
+        usuarioOriginal = this.usuarioService.buscarUsuarioId(usuarioAtualizado.getId());
 
-            usuario = cooperativa.getUsuario();
-            usuario.setId(infoCooperativa.getUsuario().getId());
-            infoUsuario = this.usuarioService.buscarUsuarioId(usuario.  getId());
-
-            System.out.println(infoUsuario.getEndereco().getNumero());
-            if (usuario.getSenha() == null){
-                usuario.setSenha(infoUsuario.getSenha());
-            }
-
-            if (infoUsuario.getEndereco() != null){
-                usuario.getEndereco().setId(
-                        infoUsuario.getEndereco().getId()
-                );
-            }
-
-            Endereco endereco = this.enderecoService.cadastrarEndereco(EnderecoMapper.of(usuario.getEndereco()));
-
-            usuario.setEndereco(endereco);
-            this.usuarioService.atualizarUsuario(usuario);
-            cooperativa.setUsuario(usuario);
-
-            return this.repository.save(cooperativa);
+        if (usuarioOriginal.getEndereco() != null) {
+            usuarioAtualizado.getEndereco().setId(usuarioAtualizado.getEndereco().getId());
         }
 
-        throw new EntidadeNaoEncontradaException("Campo id inválido");
+        Endereco endereco = this.enderecoService.cadastrarEndereco(EnderecoMapper.of(usuarioAtualizado.getEndereco()));
+
+        usuarioAtualizado.setEndereco(endereco);
+        this.usuarioService.atualizarUsuario(usuarioAtualizado);
+        cooperativaAtualizada.setUsuario(usuarioAtualizado);
+
+        this.repository.save(cooperativaAtualizada);
     }
 
     public void deletarCooperativa(Integer id){

@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @Entity(name = "cooperativa")
 @EqualsAndHashCode(of = "id")
+@NoArgsConstructor
 public class Cooperativa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +20,4 @@ public class Cooperativa {
     @OneToOne
     @JoinColumn(name = "fk_usuario")
     private Usuario usuario;
-
 }
