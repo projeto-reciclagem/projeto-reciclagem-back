@@ -2,8 +2,10 @@ package com.projeto.sprint.projetosprint.domain.repository;
 
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,4 +61,20 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
             " AND a.status = 2")
     Integer canceladoMes(int idCooperativa, LocalDateTime data,LocalDateTime endData);
 
+    @Query("SELECT a FROM Agenda a JOIN Usuario u ON a.condominio.usuario.id = u.id " +
+            "WHERE a.cooperativa.id = :cooperativaId " +
+            "AND (:status IS NULL OR a.status = :status) " +
+            "AND (:nomeCliente IS NULL OR a.condominio.nome ILIKE %:nomeCliente%)")
+    List<Agenda> buscarPorCooperativaComFiltros(@Param("cooperativaId") int cooperativaId,
+                                                @Param("status") Status status,
+                                                @Param("nomeCliente") String nomeCliente,
+                                                Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM Agenda a JOIN Usuario u ON a.condominio.usuario.id = u.id " +
+            "WHERE a.cooperativa.id = :cooperativaId " +
+            "AND (:status IS NULL OR a.status = :status) " +
+            "AND (:nomeCliente IS NULL OR a.condominio.nome ILIKE %:nomeCliente%)")
+    long contagemDeAgendamentosPorCooperativa(@Param("cooperativaId") int cooperativaId,
+                              @Param("status") Status status,
+                              @Param("nomeCliente") String nomeCliente);
 }

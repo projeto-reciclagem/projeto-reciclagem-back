@@ -1,18 +1,18 @@
 package com.projeto.sprint.projetosprint.service.agenda;
 
 import com.projeto.sprint.projetosprint.controller.agendamento.AgendaMapper;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaRealizadasMesDTO;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.*;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
+import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
 import com.projeto.sprint.projetosprint.util.CalcularPorcentagem;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,10 +30,37 @@ public class AgendaService {
     private final CooperativaService cooperativaService;
     private final CondominioService condominioService;
 
+    public AgendaListagemResponseDTO listarAgendamentos(String auth, String nomeCliente, Status statusAgendamento, int pageIndex, int perPage) {
+        Cooperativa cooperativa = cooperativaService.buscarCooperativa(auth.replace("auth=", ""));
+        int idCooperativa = cooperativa.getId();
 
-    public List<AgendaResponseDTO> listarAgendamentos(){
-        List<Agenda> agendamentos = this.repository.findAll();
-        return agendamentos.stream().map(AgendaMapper :: of).toList();
+        PageRequest pageRequest = PageRequest.of(pageIndex, perPage, Sort.by(
+                Sort.Order.desc("datAgendamento")
+        ));
+
+        List<Agenda> schedules = repository.buscarPorCooperativaComFiltros(idCooperativa, statusAgendamento, nomeCliente, pageRequest);
+        long totalCount = repository.contagemDeAgendamentosPorCooperativa(idCooperativa, statusAgendamento, nomeCliente);
+
+        List<AgendaListagemDTO> schedulesListDTO = AgendaMapper.toDTOList(schedules);
+
+        AgendaListagemResponseDTO response = new AgendaListagemResponseDTO();
+        response.setSchedules(schedulesListDTO);
+
+        AgendaListagemResponseDTO.Meta meta = new AgendaListagemResponseDTO.Meta();
+        meta.setPageIndex(pageIndex);
+        meta.setPerPage(perPage);
+        meta.setTotalCount(totalCount);
+
+        response.setMeta(meta);
+
+        return response;
+    }
+
+    public long countSchedules(String auth, String nomeCliente, Status statusAgendamento) {
+        Cooperativa cooperativa = cooperativaService.buscarCooperativa(auth.replace("auth=", ""));
+        int idCooperativa = cooperativa.getId();
+
+        return this.repository.contagemDeAgendamentosPorCooperativa(idCooperativa, statusAgendamento, nomeCliente);
     }
 
     public Agenda cadastrarAgenda(AgendaCriacaoDTO dados){

@@ -1,15 +1,14 @@
 package com.projeto.sprint.projetosprint.controller.agendamento;
 
 
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaRealizadasMesDTO;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
-import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.*;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,14 +23,22 @@ public class AgendaController {
 
     private final AgendaService service;
 
-    @GetMapping("/listar")
-    public ResponseEntity<List<AgendaResponseDTO>> listarAgendamentos() {
-        return ResponseEntity.ok(
-                this.service.listarAgendamentos());
+    @Operation(summary = "Busca todos os agendamentos", description = "Busca todos os agendamentos do usuário")
+    @GetMapping
+    public ResponseEntity<AgendaListagemResponseDTO> listarAgendamentos(
+            @RequestHeader(HttpHeaders.COOKIE) String auth,
+            @RequestParam(required = false) String nomeCliente,
+            @RequestParam(required = false) Status status,
+            @RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "8") int perPage
+    ) {
+        AgendaListagemResponseDTO schedulesListResponseDTO = service.listarAgendamentos(auth, nomeCliente, status, pageIndex, perPage);
+        return ResponseEntity.ok(schedulesListResponseDTO);
     }
 
     // Criar um novo agendamento
-    @PostMapping("/cadastrar")
+    @Operation(summary = "Cria um novo agendamento", description = "Cria um novo agendamento de coleta.")
+    @PostMapping
     public ResponseEntity<AgendaResponseDTO> cadastrarAgendaColeta(@Valid @RequestBody AgendaCriacaoDTO dados) {
         return ResponseEntity.status(201).body(
                 AgendaMapper.of(
@@ -39,16 +46,16 @@ public class AgendaController {
                 ));
     }
 
-    // Atualizar um agendamento existente
-    @PutMapping("/atualizar/{id}")
+    @Operation(summary = "Atualizar dados do agendamento", description = "Atualiza os dados de agendamento de coleta em específico")
+    @PutMapping("/{id}")
     public ResponseEntity<Agenda> atualizarAgendamento(@PathVariable int id,
                                                        @Valid @RequestBody Agenda dados) {
         dados.setId(id);
         return ResponseEntity.ok(this.service.atualizarAgendamento(dados));
     }
 
-    // Excluir um agendamento
-    @DeleteMapping("/deletar/{id}")
+    @Operation(summary = "Exclui um agendamento", description = "Exclui um agendamento em especifíco")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirAgendamento(@PathVariable int id) {
         this.service.excluirAgendamento(id);
         return ResponseEntity.noContent().build();
