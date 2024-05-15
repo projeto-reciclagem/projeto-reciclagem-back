@@ -30,13 +30,14 @@ public class AgendaMapper {
 
     public static AgendaListagemDTO toDTO(Agenda agenda) {
         AgendaListagemDTO dto = new AgendaListagemDTO();
+
         dto.setId(agenda.getId());
         dto.setDatAgendamento(agenda.getDatAgendamento());
         dto.setDatRetirada(agenda.getDatRetirada());
         dto.setQtdBags(agenda.getQtBag());
         dto.setStatus(agenda.getStatus());
-        dto.setCooperativa(CooperativaMapper.of(agenda.getCooperativa()));
-        dto.setCondominio(CondominioMapper.of(agenda.getCondominio()));
+        dto.setCooperativa(CooperativaMapper.toSimpleResponseDto(agenda.getCooperativa()));
+        dto.setCondominio(CondominioMapper.toSimpleResponseDto(agenda.getCondominio()));
 
         return dto;
     }

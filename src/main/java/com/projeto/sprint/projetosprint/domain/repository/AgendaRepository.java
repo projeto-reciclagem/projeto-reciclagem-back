@@ -64,7 +64,7 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
     @Query("SELECT a FROM Agenda a JOIN Usuario u ON a.condominio.usuario.id = u.id " +
             "WHERE a.cooperativa.id = :cooperativaId " +
             "AND (:status IS NULL OR a.status = :status) " +
-            "AND (:nomeCliente IS NULL OR a.condominio.nome ILIKE %:nomeCliente%)")
+            "AND (:nomeCli ente IS NULL OR a.condominio.nome ILIKE %:nomeCliente%)")
     List<Agenda> buscarPorCooperativaComFiltros(@Param("cooperativaId") int cooperativaId,
                                                 @Param("status") Status status,
                                                 @Param("nomeCliente") String nomeCliente,

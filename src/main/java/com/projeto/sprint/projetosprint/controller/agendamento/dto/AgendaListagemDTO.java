@@ -1,9 +1,8 @@
 package com.projeto.sprint.projetosprint.controller.agendamento.dto;
 
-import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
-import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioSimpleResponseDTO;
+import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaSimpleResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,6 +15,6 @@ public class AgendaListagemDTO {
     private Integer qtdBags;
     private Status status;
 
-    private CooperativaResponseDTO cooperativa;
-    private CondominioResponseDTO condominio;
+    private CooperativaSimpleResponseDTO cooperativa;
+    private CondominioSimpleResponseDTO condominio;
 }

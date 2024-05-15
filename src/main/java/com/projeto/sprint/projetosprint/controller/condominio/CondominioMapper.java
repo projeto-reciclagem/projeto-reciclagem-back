@@ -3,6 +3,7 @@ package com.projeto.sprint.projetosprint.controller.condominio;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioAtualizarDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioSimpleResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
@@ -48,6 +49,21 @@ public class CondominioMapper {
         }
 
         return condominioResponseDTO;
+    }
+
+    public static CondominioSimpleResponseDTO toSimpleResponseDto(Condominio condominio) {
+        CondominioSimpleResponseDTO dto = new CondominioSimpleResponseDTO();
+
+        dto.setNome(condominio.getNome());
+        dto.setEmail(condominio.getUsuario().getEmail());
+        dto.setCep(condominio.getUsuario().getEndereco() != null ? condominio.getUsuario().getEndereco().getCep() : null);
+        dto.setLogradouro(condominio.getUsuario().getEndereco() != null ? condominio.getUsuario().getEndereco().getLogradouro() : null);
+        dto.setBairro(condominio.getUsuario().getEndereco() != null ? condominio.getUsuario().getEndereco().getBairro() : null);
+        dto.setCidade(condominio.getUsuario().getEndereco() != null ? condominio.getUsuario().getEndereco().getCidade() : null);
+        dto.setNumero(condominio.getUsuario().getEndereco() != null ? condominio.getUsuario().getEndereco().getNumero() : null);
+        dto.setComplemento(condominio.getUsuario().getEndereco() != null ? condominio.getUsuario().getEndereco().getComplemento() : null);
+
+        return dto;
     }
 
     public static Condominio of(CondominioAtualizarDTO condominioDTO){

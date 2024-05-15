@@ -47,6 +47,7 @@ public class AgendaService {
         response.setSchedules(schedulesListDTO);
 
         AgendaListagemResponseDTO.Meta meta = new AgendaListagemResponseDTO.Meta();
+
         meta.setPageIndex(pageIndex);
         meta.setPerPage(perPage);
         meta.setTotalCount(totalCount);
