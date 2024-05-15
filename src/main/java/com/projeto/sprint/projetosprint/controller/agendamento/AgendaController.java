@@ -2,6 +2,7 @@ package com.projeto.sprint.projetosprint.controller.agendamento;
 
 
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaRealizadasMesDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
@@ -97,10 +98,8 @@ public class AgendaController {
     }
 
     @GetMapping("/coletas-realizadas/mes/{id}")
-    public ResponseEntity<Integer> coletasRealizadasUltimoMes(@PathVariable int id){
-        return ResponseEntity.ok(
-                this.service.coletasRealizadasUltimoMes(id)
-        );
+    public ResponseEntity<AgendaRealizadasMesDTO> totalRealizadoMes(@PathVariable int id){
+        return ResponseEntity.ok(this.service.coletasRealizadasMes(id));
     }
 
     @GetMapping("/ultima-coleta/{id}")

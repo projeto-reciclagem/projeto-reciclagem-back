@@ -2,6 +2,7 @@ package com.projeto.sprint.projetosprint.service.agenda;
 
 import com.projeto.sprint.projetosprint.controller.agendamento.AgendaMapper;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaRealizadasMesDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
@@ -122,6 +123,31 @@ public class AgendaService {
         return this.repository.countByCooperativaId(idCooperativa,
                 dataAtual.minusMonths(1),
                 dataAtual);
+    }
+
+    public AgendaRealizadasMesDTO coletasRealizadasMes(int id){
+        LocalDate mesAtual = LocalDate.now();
+
+        Integer realizadoMesAtual = this.repository.realizadoMes(
+                id,
+                mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+
+        LocalDate mesAnterior = mesAtual.minusMonths(1);
+        Integer realizadoMesAnterior = this.repository.realizadoMes(
+                id,
+                mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
+                mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
+        );
+
+        Double p = 0.0;
+
+        if (realizadoMesAtual != 0) {
+            p = CalcularPorcentagem.porcentagemAumentou(realizadoMesAtual, realizadoMesAnterior);
+        }
+
+        return new AgendaRealizadasMesDTO(realizadoMesAtual, realizadoMesAnterior, p.intValue());
     }
 
     public Integer ultimaColetaFeita(int idCondominio) {

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CanceladosUltimoMesDTO {
+public class AgendaRealizadasMesDTO {
     private Integer qntMesAtual;
     private Integer qntMesAnterior;
     private Integer vlrPorcentagemDiferenca;
