@@ -4,8 +4,10 @@ import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,4 +79,19 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
     long contagemDeAgendamentosPorCooperativa(@Param("cooperativaId") int cooperativaId,
                               @Param("status") Status status,
                               @Param("nomeCliente") String nomeCliente);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Agenda a SET a.status = 1 WHERE a.id = :id")
+    void approveScheduleId(int id);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Agenda a SET a.status = 2 WHERE a.id = :id")
+    void completeScheduleId(int id);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Agenda a SET a.status = 3 WHERE a.id = :id")
+    void cancelScheduleId(int id);
 }

@@ -61,6 +61,27 @@ public class AgendaController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Aprovar um agendamento", description = "Aprova um agendamento")
+    @PatchMapping("/{scheduleId}/approve")
+    public ResponseEntity<Void> approveSchedule(@PathVariable int scheduleId) {
+        this.service.approveSchedule(scheduleId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Concluir um agendamento", description = "Concluir um agendamento")
+    @PatchMapping("/{scheduleId}/complete")
+    public ResponseEntity<Void> completeSchedule(@PathVariable int scheduleId) {
+        this.service.completeSchedule(scheduleId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Cancelar um agendamento", description = "Cancelar um agendamento")
+    @PatchMapping("/{scheduleId}/cancel")
+    public ResponseEntity<Void> cancelSchedule(@PathVariable int scheduleId) {
+        this.service.cancelSchedule(scheduleId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/buscar/data")
     public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data, @RequestParam int idCondominio, @RequestParam int idCooperativa){
         LocalDateTime dataConsulta = data.atStartOfDay();

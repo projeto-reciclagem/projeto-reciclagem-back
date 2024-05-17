@@ -179,7 +179,7 @@ public class AgendaService {
     }
 
     public Integer ultimaColetaFeita(int idCondominio) {
-        Optional<Agenda> agenda = this.repository.ultimaColetaFeita(idCondominio, Status.CONCLUIDO);
+        Optional<Agenda> agenda = this.repository.ultimaColetaFeita(idCondominio, Status.completed);
 
         if (agenda.isEmpty()) return 0;
 
@@ -217,4 +217,21 @@ public class AgendaService {
         this.repository.save(agenda);
     }
 
+    public void approveSchedule(int scheduleId) {
+        if (this.repository.existsById(scheduleId)) {
+            this.repository.approveScheduleId(scheduleId);
+        }
+    }
+
+    public void completeSchedule(int scheduleId) {
+        if (this.repository.existsById(scheduleId)) {
+            this.repository.completeScheduleId(scheduleId);
+        }
+    }
+
+    public void cancelSchedule(int scheduleId) {
+        if (this.repository.existsById(scheduleId)) {
+            this.repository.cancelScheduleId(scheduleId);
+        }
+    }
 }
