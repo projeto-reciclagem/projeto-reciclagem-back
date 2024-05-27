@@ -67,18 +67,6 @@ public class CooperativaService {
         Cooperativa cooperativa = CooperativaMapper.of(dados);
         cooperativa.setUsuario(usuario);
 
-        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
-                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
-                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
-
-        EmailBoasVindas destinatario = new EmailBoasVindas(
-                dados.getNome(), dados.email);
-
-        this.emailService.adicionarDestinatario(
-                idEmail, destinatario);
-
-        this.emailService.publicarEmail(idEmail);
-
         return this.repository.save(cooperativa);
     }
 

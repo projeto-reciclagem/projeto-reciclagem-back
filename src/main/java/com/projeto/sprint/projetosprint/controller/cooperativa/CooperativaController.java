@@ -46,7 +46,7 @@ public class CooperativaController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<CooperativaResponseDTO> cadastrarCooperativa(@Valid  @RequestBody CooperativaCriacaoDTO dados){
+    public ResponseEntity<CooperativaResponseDTO> cadastrarCooperativa(@Valid @RequestBody CooperativaCriacaoDTO dados){
 
         Cooperativa cooperativaSalva = this.service.cadastrarCooperativa(dados);
 
