@@ -1,6 +1,6 @@
 name: Ecosystem API CI
-
-on: #Executa o CI quando um pull request é aberto ou reaberto
+#Executa o CI quando um pull request é aberto ou reaberto
+on: 
   pull_request: 
     branches: 
       - main
@@ -59,6 +59,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
           tags: niltongabriel/ecosystem-api:latest
 
