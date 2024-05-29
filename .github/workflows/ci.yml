@@ -33,6 +33,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-        - name: Test with Maven
-          run: mvn test
+      - name: Test with Maven
+        run: mvn test
 
