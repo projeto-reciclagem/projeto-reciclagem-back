@@ -1,4 +1,4 @@
-name: Ecosystem API CI/CD
+name: Ecosystem API CI
 
 on: 
   pull_request: 
