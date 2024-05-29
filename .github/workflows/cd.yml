@@ -19,4 +19,4 @@ jobs:
         run: docker rm ecosystem-api || true
 
       - name: Run Docker container
-        run: docker run --name ecosystem-api -d -p 8080:8080 niltongabriel/ecosystem-api:latest
+        run: docker run -d --name ecosystem-api -p 8080:8080 niltongabriel/ecosystem-api:latest
