@@ -2,10 +2,12 @@ package com.projeto.sprint.projetosprint.controller.agendamento;
 
 
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaCriacaoDTO;
+import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponse;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.AgendaResponseDTO;
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.CanceladosUltimoMesDTO;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
+import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ public class AgendaController {
     public ResponseEntity<AgendaResponseDTO> cadastrarAgendaColeta(@Valid @RequestBody AgendaCriacaoDTO dados) {
         return ResponseEntity.status(201).body(
                 AgendaMapper.of(
-                    this.service.cadastrarAgenda(dados)
+                        this.service.cadastrarAgenda(dados)
                 ));
     }
 
@@ -54,24 +56,24 @@ public class AgendaController {
     }
 
     @GetMapping("/buscar/data")
-    public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data, @RequestParam int idCondominio, @RequestParam int idCooperativa){
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data, @RequestParam int idCondominio, @RequestParam int idCooperativa) {
         LocalDateTime dataConsulta = data.atStartOfDay();
 
         List<Agenda> agendamentos = this.service.buscarPorData(dataConsulta, idCondominio, idCooperativa);
         return ResponseEntity.ok(
-                agendamentos.stream().map(AgendaMapper :: of).toList()
+                agendamentos.stream().map(AgendaMapper::of).toList()
         );
     }
 
     @GetMapping("/coletas/ultima-semana/{id}")
-    public ResponseEntity<Integer> coletasUltimasSemanas(@PathVariable int id){
+    public ResponseEntity<Integer> coletasUltimasSemanas(@PathVariable int id) {
         return ResponseEntity.ok(
-          this.service.coletasUltimasSemanas(id)
+                this.service.coletasUltimasSemanas(id)
         );
     }
 
     @GetMapping("/atendimentos/ultima-semana/{id}")
-    public ResponseEntity<Integer> condominiosAtendidosUltimaSemana(@PathVariable int id){
+    public ResponseEntity<Integer> condominiosAtendidosUltimaSemana(@PathVariable int id) {
         return ResponseEntity.ok(
                 this.service.condominiosAtendidosUltimaSemana(id)
         );
@@ -81,42 +83,66 @@ public class AgendaController {
     public ResponseEntity<List<AgendaResponseDTO>> historicoAgendamento(@RequestParam int idCondominio,
                                                                         @RequestParam int idCooperativa,
                                                                         @RequestParam String nomeCliente,
-                                                                        @RequestParam String statusAgendamento)
-    {
+                                                                        @RequestParam String statusAgendamento) {
         return ResponseEntity.ok(
                 this.service.historicoDePedidos(idCondominio, idCooperativa, nomeCliente, statusAgendamento)
-                        .stream().map(AgendaMapper :: of).toList()
+                        .stream().map(AgendaMapper::of).toList()
+        );
+    }
+
+    @GetMapping("/historico/condominio/{id}")
+    public ResponseEntity<List<AgendaResponse>> historicoAgendamento(@PathVariable int id) {
+        return ResponseEntity.ok(
+                this.service.historicoDePedidosCondominio(id).stream().map(AgendaMapper::ofResponse).toList()
+        );
+    }
+
+    @GetMapping("/historico/condominio/analise/{id}")
+    public ResponseEntity<AgendaResponse> historicoAgendamentoAnalise(@PathVariable int id) {
+        return ResponseEntity.ok(
+                AgendaMapper.ofResponse(
+                        this.service.historicoDePedidosCondominioAnalise(id)
+                )
+        );
+    }
+
+    @GetMapping("/comprovante/condominio/{id}")
+    public ResponseEntity<List<AgendaResponse>> comprovanteAgendamento(@PathVariable int id) {
+        return ResponseEntity.ok(
+                this.service.comprovantePedidosCondominioConcluido(id).stream().map(
+                        AgendaMapper::ofResponse
+                ).toList()
         );
     }
 
     @GetMapping("/coletas-solicitadas/mes/{id}")
-    public ResponseEntity<Integer> coletasSolicitadasUltimoMes(@PathVariable int id){
+    public ResponseEntity<Integer> coletasSolicitadasUltimoMes(@PathVariable int id) {
         return ResponseEntity.ok(
-            this.service.coletasSolicitadasUltimoMes(id)
+                this.service.coletasSolicitadasUltimoMes(id)
         );
     }
 
     @GetMapping("/coletas-realizadas/mes/{id}")
-    public ResponseEntity<Integer> coletasRealizadasUltimoMes(@PathVariable int id){
+    public ResponseEntity<Integer> coletasRealizadasUltimoMes(@PathVariable int id) {
         return ResponseEntity.ok(
                 this.service.coletasRealizadasUltimoMes(id)
         );
     }
 
     @GetMapping("/ultima-coleta/{id}")
-    public ResponseEntity<Integer> ultimaColeta(@PathVariable int id){
+    public ResponseEntity<Integer> ultimaColeta(@PathVariable int id) {
         return ResponseEntity.ok(
                 this.service.ultimaColetaFeita(id)
         );
     }
 
     @GetMapping("/total/cancelado/mes/{id}")
-    public ResponseEntity<CanceladosUltimoMesDTO> totalCanceladoMes(@PathVariable int id){
+    public ResponseEntity<CanceladosUltimoMesDTO> totalCanceladoMes(@PathVariable int id) {
         return ResponseEntity.ok(this.service.totalCanceladoMes(id));
     }
 
     @GetMapping("/historico/{id}")
-    public ResponseEntity<AgendaResponseDTO> buscarAgendamentoPorId(@PathVariable int id){
+    public ResponseEntity<AgendaResponseDTO> buscarAgendamentoPorId(@PathVariable int id) {
         return ResponseEntity.ok(AgendaMapper.of(this.service.buscarAgendaPorId(id)));
     }
 

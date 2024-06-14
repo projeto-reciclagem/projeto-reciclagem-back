@@ -4,7 +4,6 @@ import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioAtua
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
-import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +34,15 @@ public class CondominioController {
 
     //Buscando condominio por ID
     @GetMapping("/buscar")
-    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorId(@RequestHeader(HttpHeaders.COOKIE) String auth) {
+    public ResponseEntity<CondominioResponseDTO> buscarCondominio(@RequestHeader(HttpHeaders.COOKIE) String auth) {
         Condominio condominio = this.service.buscarCondominio(auth.replace("auth=", ""));
+        return ResponseEntity.ok(CondominioMapper.of(condominio));
+    }
+
+    //Buscando condominio por ID
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorId(@PathVariable int id) {
+        Condominio condominio = this.service.buscarCondominioId(id);
         return ResponseEntity.ok(CondominioMapper.of(condominio));
     }
 
@@ -56,13 +62,12 @@ public class CondominioController {
     }
 
     //Atualizar os dados do condominio
-    @PutMapping("/atualizar")
-    public ResponseEntity<CondominioResponseDTO> condominio(@RequestHeader(HttpHeaders.COOKIE) String auth,
-                                                @Valid @RequestBody CondominioAtualizarDTO dados){
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<CondominioResponseDTO> condominio(@PathVariable int id, @Valid @RequestBody CondominioAtualizarDTO dados){
 
-        Condominio condominioAtual = this.service.buscarCondominio(auth.replace("auth=", ""));
+        Condominio condominioAtual = this.service.buscarCondominioId(id);
 
-        Condominio condominio = this.service.atualizarCondominio(dados, condominioAtual.getId());
+        Condominio condominio = this.service.atualizarCondominio(dados, condominioAtual);
         return ResponseEntity.ok(CondominioMapper.of(condominio));
     }
 

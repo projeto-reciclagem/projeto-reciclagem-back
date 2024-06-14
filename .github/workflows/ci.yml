@@ -1,5 +1,5 @@
 name: Ecosystem API CI
-#Executa o CI quando um pull request é aberto ou reaberto
+
 on: 
   pull_request: 
     branches: 

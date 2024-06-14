@@ -4,14 +4,11 @@ import com.projeto.sprint.projetosprint.controller.condominio.CondominioMapper;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioAtualizarDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResponseDTO;
-import com.projeto.sprint.projetosprint.controller.cooperativa.CooperativaMapper;
 import com.projeto.sprint.projetosprint.controller.endereco.EnderecoMapper;
 import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
-import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
 import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
-import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.TipoUsuario;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
 import com.projeto.sprint.projetosprint.domain.repository.CondominioRepository;
@@ -22,7 +19,6 @@ import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,7 +46,7 @@ public class CondominioService {
                 .map(CondominioMapper:: of).toList();
     }
 
-    public Condominio buscaCondominioId(Integer id){
+    public Condominio buscarCondominioId(Integer id){
         return this.repository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
                         "Campo id inválido")
@@ -86,43 +82,50 @@ public class CondominioService {
         return this.repository.save(condominio);
     }
 
-    public Condominio atualizarCondominio(CondominioAtualizarDTO dados, int id){
+    public Condominio atualizarCondominio(CondominioAtualizarDTO dados, Condominio condominioAtual){
 
-        Condominio infoCondominio, condominio;
+        Condominio infoCondominio;
         Usuario usuario, infoUsuario;
 
-        if(this.repository.existsById(id)){
-            infoCondominio = this.buscaCondominioId(id);
+        if(condominioAtual != null){
 
-            condominio = CondominioMapper.of(dados);
-            condominio.setId(id);
+            usuario = condominioAtual.getUsuario();
+//            infoUsuario = this.usuarioService.buscarUsuarioId(usuario.getId());
 
-            usuario = condominio.getUsuario();
-            usuario.setId(infoCondominio.getUsuario().getId());
-            infoUsuario = this.usuarioService.buscarUsuarioId(usuario.getId());
-
-            if (usuario.getSenha() == null){
-                usuario.setSenha(infoUsuario.getSenha());
+            if (dados.email != null){
+                usuario.setEmail(dados.email);
             }
 
-            if (infoUsuario.getEndereco() != null){
-                usuario.getEndereco().setId(
-                        infoUsuario.getEndereco().getId()
-                );
+            if (dados.senha != null){
+                usuario.setSenha(dados.senha);
             }
 
-            usuario.setEndereco(
-                    this.enderecoService.cadastrarEndereco(
-                            EnderecoMapper.of(usuario.getEndereco()))
-            );
+            if (dados.nome != null){
+                condominioAtual.setNome(dados.nome);
+            }
+
+            if (dados.cnpj != null){
+                condominioAtual.setCnpj(dados.cnpj);
+            }
+
+//            if (infoUsuario.getEndereco() != null){
+//                usuario.getEndereco().setId(
+//                        infoUsuario.getEndereco().getId()
+//                );
+//            }
+//
+//            usuario.setEndereco(
+//                    this.enderecoService.cadastrarEndereco(
+//                            EnderecoMapper.of(usuario.getEndereco()))
+//            );
 
             this.usuarioService.atualizarUsuario(usuario);
-            condominio.setUsuario(usuario);
+            condominioAtual.setUsuario(usuario);
 
-            return this.repository.save(condominio);
+            return this.repository.save(condominioAtual);
         }
 
-        throw new EntidadeNaoEncontradaException("Campo id inválido");
+        throw new EntidadeNaoEncontradaException("Condominio não encontrado");
     }
 
     public void deletarCondominio(Condominio condominio){
