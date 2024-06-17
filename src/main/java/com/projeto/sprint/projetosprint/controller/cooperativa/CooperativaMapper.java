@@ -1,8 +1,11 @@
 package com.projeto.sprint.projetosprint.controller.cooperativa;
 
+import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioSimpleResponseDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaAtualizarDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaCriacaoDTO;
 import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaResponseDTO;
+import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaSimpleResponseDTO;
+import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
@@ -36,12 +39,28 @@ public class CooperativaMapper {
                 cooperativaResponseDTO.setBairro(endereco.getBairro());
                 cooperativaResponseDTO.setCidade(endereco.getCidade());
                 cooperativaResponseDTO.setComplemento(endereco.getComplemento());
+                cooperativaResponseDTO.setNumero(endereco.getNumero());
                 cooperativaResponseDTO.setLatitude(endereco.getLatitude());
                 cooperativaResponseDTO.setLongitude(endereco.getLongitude());
             }
         }
 
         return cooperativaResponseDTO;
+    }
+
+    public static CooperativaSimpleResponseDTO toSimpleResponseDto(Cooperativa cooperativa) {
+        CooperativaSimpleResponseDTO dto = new CooperativaSimpleResponseDTO();
+
+        dto.setNome(cooperativa.getNome());
+        dto.setEmail(cooperativa.getUsuario().getEmail());
+        dto.setCep(cooperativa.getUsuario().getEndereco() != null ? cooperativa.getUsuario().getEndereco().getCep() : null);
+        dto.setLogradouro(cooperativa.getUsuario().getEndereco() != null ? cooperativa.getUsuario().getEndereco().getLogradouro() : null);
+        dto.setBairro(cooperativa.getUsuario().getEndereco() != null ? cooperativa.getUsuario().getEndereco().getBairro() : null);
+        dto.setCidade(cooperativa.getUsuario().getEndereco() != null ? cooperativa.getUsuario().getEndereco().getCidade() : null);
+        dto.setNumero(cooperativa.getUsuario().getEndereco() != null ? cooperativa.getUsuario().getEndereco().getNumero() : null);
+        dto.setComplemento(cooperativa.getUsuario().getEndereco() != null ? cooperativa.getUsuario().getEndereco().getComplemento() : null);
+
+        return dto;
     }
 
     public static Cooperativa of(CooperativaAtualizarDTO cooperativaDTO){
@@ -64,6 +83,7 @@ public class CooperativaMapper {
         endereco.setLogradouro(cooperativaDTO.getLogradouro());
         endereco.setCidade(cooperativaDTO.getCidade());
         endereco.setComplemento(cooperativaDTO.getComplemento());
+        endereco.setNumero(cooperativaDTO.getNumero());
 
         usuario.setEndereco(endereco);
         cooperativa.setUsuario(usuario);

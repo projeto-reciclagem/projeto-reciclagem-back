@@ -8,5 +8,5 @@ import lombok.Data;
 public class CanceladosUltimoMesDTO {
     private Integer qntMesAtual;
     private Integer qntMesAnterior;
-    private Integer vlrPorentagemDiferanca;
+    private Integer vlrPorcentagemDiferenca;
 }

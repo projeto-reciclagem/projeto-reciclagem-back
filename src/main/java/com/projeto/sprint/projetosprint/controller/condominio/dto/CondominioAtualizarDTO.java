@@ -29,4 +29,5 @@ public class CondominioAtualizarDTO {
     private String bairro;
     private String cidade;
     private String complemento;
+    private String numero;
 }

@@ -49,9 +49,7 @@ public class SecurityConfiguration {
             new AntPathRequestMatcher("/usuarios/**", "POST"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
-            new AntPathRequestMatcher("/cooperativas/**", "GET"),
             new AntPathRequestMatcher("/cooperativas/cadastrar"),
-            new AntPathRequestMatcher("/condominios/**", "GET"),
             new AntPathRequestMatcher("/condominios/cadastrar")
 
     };

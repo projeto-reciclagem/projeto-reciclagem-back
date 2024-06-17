@@ -16,6 +16,7 @@ public class CooperativaAtualizarDTO {
     private String cep;
     private String logradouro;
     private String bairro;
+    private String numero;
     private String cidade;
     private String complemento;
 }
