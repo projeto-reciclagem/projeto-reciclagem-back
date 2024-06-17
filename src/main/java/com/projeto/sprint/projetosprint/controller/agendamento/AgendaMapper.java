@@ -17,12 +17,12 @@ public class AgendaMapper {
 
         dto.setId(agenda.getId());
         dto.setDatAgendamento(agenda.getDatAgendamento());
-        dto.setDatRetirada(agenda.getDatRetirada());
         dto.setQtBag(agenda.getQtBag());
         dto.setStatus(agenda.getStatus());
 
-        dto.setCooperativa(CooperativaMapper.of(agenda.getCooperativa()));
-        dto.setCondominio(CondominioMapper.of(agenda.getCondominio()));
+        dto.setCooperativa(agenda.getCooperativa().getNome());
+        dto.setCondominio(agenda.getCondominio().getNome());
+        dto.setEndereco(agenda.getCondominio().getUsuario().getEndereco().getLogradouro());
         return dto;
     }
 
@@ -51,7 +51,7 @@ public class AgendaMapper {
             agendaResponse.setId(agenda.getId());
             agendaResponse.setBags(agenda.getQtBag());
             agendaResponse.setEndereco(agenda.getCondominio().getUsuario().getEndereco().getLogradouro());
-            agendaResponse.setData(agenda.getDatAgendamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            agendaResponse.setData(agenda.getDatRetirada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             agendaResponse.setValor(0.0);
 
             agendaResponse.setHoraColeta(
