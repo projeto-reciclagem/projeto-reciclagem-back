@@ -35,8 +35,8 @@ public class CondominioMapper {
             condominioResponseDTO.setEmail(usuario.getEmail());
             condominioResponseDTO.setImgUsuario(usuario.getImgUsuario());
 
-            if (usuario.getEndereco() != null){
-                Endereco endereco = condominio.getUsuario().getEndereco();
+            if(usuario.getEndereco() != null){
+                Endereco endereco = usuario.getEndereco();
                 condominioResponseDTO.setCep(endereco.getCep());
                 condominioResponseDTO.setLogradouro(endereco.getLogradouro());
                 condominioResponseDTO.setBairro(endereco.getBairro());

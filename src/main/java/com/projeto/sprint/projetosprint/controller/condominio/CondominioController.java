@@ -6,6 +6,8 @@ import com.projeto.sprint.projetosprint.controller.condominio.dto.CondominioResp
 import com.projeto.sprint.projetosprint.domain.entity.condominio.Condominio;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
+import com.projeto.sprint.projetosprint.util.annotations.currentUser.CurrentUser;
+import com.projeto.sprint.projetosprint.util.annotations.currentUser.UserContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -34,9 +36,11 @@ public class CondominioController {
     }
 
     //Buscando condominio por ID
+    @CurrentUser
     @GetMapping("/buscar")
-    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorId(@RequestHeader(HttpHeaders.COOKIE) String auth) {
-        Condominio condominio = this.service.buscarCondominio(auth.replace("auth=", ""));
+    public ResponseEntity<CondominioResponseDTO> buscarCondominioPorId() {
+        String email = UserContextHolder.getUser();
+        Condominio condominio = this.service.buscarCondominio(email);
         return ResponseEntity.ok(CondominioMapper.of(condominio));
     }
 
@@ -56,11 +60,11 @@ public class CondominioController {
     }
 
     //Atualizar os dados do condominio
+    @CurrentUser
     @PutMapping("/atualizar")
-    public ResponseEntity<CondominioResponseDTO> condominio(@RequestHeader(HttpHeaders.COOKIE) String auth,
-                                                @Valid @RequestBody CondominioAtualizarDTO dados){
-
-        Condominio condominioAtual = this.service.buscarCondominio(auth.replace("auth=", ""));
+    public ResponseEntity<CondominioResponseDTO> condominio(@Valid @RequestBody CondominioAtualizarDTO dados){
+        String email = UserContextHolder.getUser();
+        Condominio condominioAtual = this.service.buscarCondominio(email);
 
         Condominio condominio = this.service.atualizarCondominio(dados, condominioAtual.getId());
         return ResponseEntity.ok(CondominioMapper.of(condominio));

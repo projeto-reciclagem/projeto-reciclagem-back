@@ -6,6 +6,7 @@ import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.domain.repository.AgendaRepository;
+import com.projeto.sprint.projetosprint.exception.DataInvalidaException;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.service.condominio.CondominioService;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
@@ -17,10 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +30,15 @@ public class AgendaService {
     private final CooperativaService cooperativaService;
     private final CondominioService condominioService;
 
-    public AgendaListagemResponseDTO listarAgendamentos(String auth, String nomeCliente, Status statusAgendamento, int pageIndex, int perPage) {
-        Cooperativa cooperativa = cooperativaService.buscarCooperativa(auth.replace("auth=", ""));
+    public AgendaListagemResponseDTO listarAgendamentos(String email, String nomeCliente, Status statusAgendamento, int pageIndex, int perPage) {
+        Cooperativa cooperativa = cooperativaService.buscarCooperativa(email);
         int idCooperativa = cooperativa.getId();
 
         PageRequest pageRequest = PageRequest.of(pageIndex, perPage, Sort.by(
                 Sort.Order.desc("datAgendamento")
         ));
 
-        List<Agenda> schedules = repository.buscarPorCooperativaComFiltros(idCooperativa, statusAgendamento, nomeCliente, pageRequest);
+        List<Agenda> schedules = repository.findAgendamentosPorCooperativa(idCooperativa, statusAgendamento, nomeCliente, pageRequest);
         long totalCount = repository.contagemDeAgendamentosPorCooperativa(idCooperativa, statusAgendamento, nomeCliente);
 
         List<AgendaListagemDTO> schedulesListDTO = AgendaMapper.toDTOList(schedules);
@@ -55,13 +55,6 @@ public class AgendaService {
         response.setMeta(meta);
 
         return response;
-    }
-
-    public long countSchedules(String auth, String nomeCliente, Status statusAgendamento) {
-        Cooperativa cooperativa = cooperativaService.buscarCooperativa(auth.replace("auth=", ""));
-        int idCooperativa = cooperativa.getId();
-
-        return this.repository.contagemDeAgendamentosPorCooperativa(idCooperativa, statusAgendamento, nomeCliente);
     }
 
     public Agenda cadastrarAgenda(AgendaCriacaoDTO dados){
@@ -93,111 +86,43 @@ public class AgendaService {
         throw new EntidadeNaoEncontradaException("Campo id inválido");
     }
 
-    public List<Agenda> buscarPorData(LocalDateTime data, int idCondominio, int idCooperativa){
-        LocalDateTime endData = data.toLocalDate().atTime(23, 59, 59);
-
-        if(idCondominio != 0){
-            return this.repository.findByDatRetiradaCondominio(idCondominio, data, endData);
-        }
-        else if (idCooperativa != 0){
-            return this.repository.findByDatRetiradaCooperativa(idCooperativa, data, endData);
-        }
-        return null;
-    }
-
-    public Integer coletasUltimasSemanas(int idCooperativa){
-        LocalDateTime datAtual = LocalDateTime.now();
-        LocalDateTime datSemanaPassada = datAtual.minusWeeks(1);
-
-        return this.repository.contagemAgendamentoUltimaSemana(idCooperativa, datSemanaPassada, datAtual);
-    }
-
-    public Integer condominiosAtendidosUltimaSemana(int idCooperativa){
-        LocalDateTime datAtual = LocalDateTime.now();
-        LocalDateTime datSemanaPassada = datAtual.minusWeeks(1);
-
-        return this.repository.condominiosAtendidosUltimaSemana(idCooperativa, datSemanaPassada, datAtual);
-    }
-
-    public List<Agenda> historicoDePedidos(int idCondominio, int idCooperativa, String nomeCliente, String statusAgendamento) {
-        Status status = null;
-        if (!statusAgendamento.isEmpty()) {
-            status = Status.valueOf(statusAgendamento);
-        }
-
-        if (idCondominio != 0) {
-            return this.repository.findByCondominio(idCondominio, nomeCliente, status);
-        } else if (idCooperativa != 0) {
-            return this.repository.findByCooperativa(idCooperativa, nomeCliente, status);
-        }
-        return null;
-    }
-
-    public Agenda buscarAgendaPorId(int id){
-        return this.repository.findById(id).get();
-    }
-
-    public Integer coletasSolicitadasUltimoMes(int idCondominio){
-        LocalDateTime dataAtual = LocalDateTime.now();
-
-        return this.repository.countByCondominioId(idCondominio,
-                dataAtual.minusMonths(1),
-                dataAtual);
-    }
-
-    public Integer coletasRealizadasUltimoMes(int idCooperativa){
-        LocalDateTime dataAtual = LocalDateTime.now();
-
-        return this.repository.countByCooperativaId(idCooperativa,
-                dataAtual.minusMonths(1),
-                dataAtual);
-    }
-
-    public AgendaRealizadasMesDTO coletasRealizadasMes(int id){
+    public AgendamentosRealizadosDTO getAgendamentosRealizados(String email){
         LocalDate mesAtual = LocalDate.now();
 
-        Integer realizadoMesAtual = this.repository.realizadoMes(
-                id,
+        Integer realizadoMesAtual = this.repository.findAgendamentosRealizados(
+                email,
                 mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
                 mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
         );
 
         LocalDate mesAnterior = mesAtual.minusMonths(1);
-        Integer realizadoMesAnterior = this.repository.realizadoMes(
-                id,
+        Integer realizadoMesAnterior = this.repository.findAgendamentosRealizados(
+                email,
                 mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
                 mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
         );
 
         Double p = 0.0;
 
-        if (realizadoMesAtual != 0) {
+        if (realizadoMesAnterior != 0) {
             p = CalcularPorcentagem.porcentagemAumentou(realizadoMesAtual, realizadoMesAnterior);
         }
 
-        return new AgendaRealizadasMesDTO(realizadoMesAtual, realizadoMesAnterior, p.intValue());
+        return new AgendamentosRealizadosDTO(realizadoMesAtual, realizadoMesAnterior, p);
     }
 
-    public Integer ultimaColetaFeita(int idCondominio) {
-        Optional<Agenda> agenda = this.repository.ultimaColetaFeita(idCondominio, Status.completed);
-
-        if (agenda.isEmpty()) return 0;
-
-        return (int) ChronoUnit.DAYS.between(agenda.get().getDatRetirada().toLocalDate(), LocalDate.now());
-    }
-
-    public CanceladosUltimoMesDTO totalCanceladoMes(int id){
+    public CanceladosUltimoMesDTO totalCanceladoMes(String email) {
         LocalDate mesAtual = LocalDate.now();
 
-        Integer canceladoMesAtual = this.repository.canceladoMes(
-            id,
+        Integer canceladoMesAtual = this.repository.findAgendamentosCancelados(
+            email,
             mesAtual.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
             mesAtual.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
         );
 
         LocalDate mesAnterior = mesAtual.minusMonths(1);
-        Integer canceladoMesAnterior = this.repository.canceladoMes(
-            id,
+        Integer canceladoMesAnterior = this.repository.findAgendamentosCancelados(
+                email,
             mesAnterior.with(TemporalAdjusters.firstDayOfMonth()).atTime(0,0,0),
             mesAnterior.with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59)
         );
@@ -209,12 +134,6 @@ public class AgendaService {
         }
 
         return new CanceladosUltimoMesDTO(canceladoMesAtual, canceladoMesAnterior, p.intValue());
-    }
-
-    public void atualizarStatusAgendamento(int id, Status status){
-        Agenda agenda = this.buscarAgendaPorId(id);
-        agenda.setStatus(status);
-        this.repository.save(agenda);
     }
 
     public void approveSchedule(int scheduleId) {
@@ -232,6 +151,28 @@ public class AgendaService {
     public void cancelSchedule(int scheduleId) {
         if (this.repository.existsById(scheduleId)) {
             this.repository.cancelScheduleId(scheduleId);
+        }
+    }
+
+    public List<AgendamentoDiarioDTO> getSchedulesRealizedInPeriod(String email, LocalDate initialDate, LocalDate finalDate) {
+        List<AgendamentoDiarioDTO> schedulesRealizedInPeriod = new ArrayList<AgendamentoDiarioDTO>();
+        Cooperativa cooperativa = cooperativaService.buscarCooperativa(email);
+
+        if (initialDate.equals(finalDate.minusDays(7))) {
+            for (int i = 0; i <= 7; i++) {
+                LocalDateTime initialDateStartTime = initialDate.atTime(0,0,0);
+                LocalDateTime initialDateEndTime = initialDate.atTime(23,59,59);
+
+                Integer schedulesCollected = this.repository.countRealizedSchedulesInPeriod(cooperativa.getId(), initialDateStartTime, initialDateEndTime);
+
+                schedulesRealizedInPeriod.add(new AgendamentoDiarioDTO(initialDate, schedulesCollected));
+
+                initialDate = initialDate.plusDays(1);
+            }
+            
+            return schedulesRealizedInPeriod;
+        } else {
+            throw new DataInvalidaException("Intervalo de datas inválido.");
         }
     }
 }

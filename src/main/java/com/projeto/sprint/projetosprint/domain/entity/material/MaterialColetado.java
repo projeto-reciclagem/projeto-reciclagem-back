@@ -2,6 +2,7 @@ package com.projeto.sprint.projetosprint.domain.entity.material;
 
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,20 +10,19 @@ import lombok.Setter;
 @Setter
 @Entity
 public class MaterialColetado {
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "fk_material")
+    private Material material;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private Double qntKgColetado;
-
-    private Double vlrTotalColedo;
-
-    @ManyToOne
-    @JoinColumn(name = "fk_materialPreco")
-    private MaterialPreco materialPreco;
-
     @ManyToOne
     @JoinColumn(name = "fk_agenda")
     private Agenda agenda;
+
+    @NotNull
+    private Double pesagemColetada;
+
+    @NotNull
+    private Double valorTotal;
 }

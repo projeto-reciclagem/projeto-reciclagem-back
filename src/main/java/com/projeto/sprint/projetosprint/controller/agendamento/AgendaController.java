@@ -1,20 +1,22 @@
 package com.projeto.sprint.projetosprint.controller.agendamento;
 
-
 import com.projeto.sprint.projetosprint.controller.agendamento.dto.*;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Agenda;
 import com.projeto.sprint.projetosprint.domain.entity.agenda.Status;
 import com.projeto.sprint.projetosprint.service.agenda.AgendaService;
+import com.projeto.sprint.projetosprint.util.annotations.currentUser.CurrentUser;
+import com.projeto.sprint.projetosprint.util.annotations.currentUser.UserContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -24,19 +26,19 @@ public class AgendaController {
     private final AgendaService service;
 
     @Operation(summary = "Busca todos os agendamentos", description = "Busca todos os agendamentos do usuário")
+    @CurrentUser
     @GetMapping
     public ResponseEntity<AgendaListagemResponseDTO> listarAgendamentos(
-            @RequestHeader(HttpHeaders.COOKIE) String auth,
             @RequestParam(required = false) String nomeCliente,
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "8") int perPage
     ) {
-        AgendaListagemResponseDTO schedulesListResponseDTO = service.listarAgendamentos(auth, nomeCliente, status, pageIndex, perPage);
+        String userEmail = UserContextHolder.getUser();
+        AgendaListagemResponseDTO schedulesListResponseDTO = service.listarAgendamentos(userEmail, nomeCliente, status, pageIndex, perPage);
         return ResponseEntity.ok(schedulesListResponseDTO);
     }
 
-    // Criar um novo agendamento
     @Operation(summary = "Cria um novo agendamento", description = "Cria um novo agendamento de coleta.")
     @PostMapping
     public ResponseEntity<AgendaResponseDTO> cadastrarAgendaColeta(@Valid @RequestBody AgendaCriacaoDTO dados) {
@@ -82,74 +84,29 @@ public class AgendaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/buscar/data")
-    public ResponseEntity<List<AgendaResponseDTO>> buscarPorData(@RequestParam LocalDate data, @RequestParam int idCondominio, @RequestParam int idCooperativa){
-        LocalDateTime dataConsulta = data.atStartOfDay();
-
-        List<Agenda> agendamentos = this.service.buscarPorData(dataConsulta, idCondominio, idCooperativa);
-        return ResponseEntity.ok(
-                agendamentos.stream().map(AgendaMapper :: of).toList()
-        );
+    @Operation(summary = "Agendamentos realizados", description = "Retorna a quantidade total de agendamentos realizados no mês")
+    @CurrentUser
+    @GetMapping("/realizados")
+    public ResponseEntity<AgendamentosRealizadosDTO> completedSchedules() {
+        String email = UserContextHolder.getUser();
+        AgendamentosRealizadosDTO response = this.service.getAgendamentosRealizados(email);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/coletas/ultima-semana/{id}")
-    public ResponseEntity<Integer> coletasUltimasSemanas(@PathVariable int id){
-        return ResponseEntity.ok(
-          this.service.coletasUltimasSemanas(id)
-        );
+    @Operation(summary = "Agendamentos cancelados", description = "Retorna a quantidade total de agendamentos cancelados no mês")
+    @CurrentUser
+    @GetMapping("/cancelados")
+    public ResponseEntity<CanceladosUltimoMesDTO> cancelledSchedules(){
+        String email = UserContextHolder.getUser();
+        return ResponseEntity.ok(this.service.totalCanceladoMes(email));
     }
 
-    @GetMapping("/atendimentos/ultima-semana/{id}")
-    public ResponseEntity<Integer> condominiosAtendidosUltimaSemana(@PathVariable int id){
-        return ResponseEntity.ok(
-                this.service.condominiosAtendidosUltimaSemana(id)
-        );
-    }
-
-    @GetMapping("/historico")
-    public ResponseEntity<List<AgendaResponseDTO>> historicoAgendamento(@RequestParam int idCondominio,
-                                                                        @RequestParam int idCooperativa,
-                                                                        @RequestParam String nomeCliente,
-                                                                        @RequestParam String statusAgendamento)
-    {
-        return ResponseEntity.ok(
-                this.service.historicoDePedidos(idCondominio, idCooperativa, nomeCliente, statusAgendamento)
-                        .stream().map(AgendaMapper :: of).toList()
-        );
-    }
-
-    @GetMapping("/coletas-solicitadas/mes/{id}")
-    public ResponseEntity<Integer> coletasSolicitadasUltimoMes(@PathVariable int id){
-        return ResponseEntity.ok(
-            this.service.coletasSolicitadasUltimoMes(id)
-        );
-    }
-
-    @GetMapping("/coletas-realizadas/mes/{id}")
-    public ResponseEntity<AgendaRealizadasMesDTO> totalRealizadoMes(@PathVariable int id){
-        return ResponseEntity.ok(this.service.coletasRealizadasMes(id));
-    }
-
-    @GetMapping("/ultima-coleta/{id}")
-    public ResponseEntity<Integer> ultimaColeta(@PathVariable int id){
-        return ResponseEntity.ok(
-                this.service.ultimaColetaFeita(id)
-        );
-    }
-
-    @GetMapping("/total/cancelado/mes/{id}")
-    public ResponseEntity<CanceladosUltimoMesDTO> totalCanceladoMes(@PathVariable int id){
-        return ResponseEntity.ok(this.service.totalCanceladoMes(id));
-    }
-
-    @GetMapping("/historico/{id}")
-    public ResponseEntity<AgendaResponseDTO> buscarAgendamentoPorId(@PathVariable int id){
-        return ResponseEntity.ok(AgendaMapper.of(this.service.buscarAgendaPorId(id)));
-    }
-
-    @PatchMapping("/status/{id}")
-    public ResponseEntity<Void> atualizarStatusAgendamento(@PathVariable int id, @RequestParam Status status) {
-        this.service.atualizarStatusAgendamento(id, status);
-        return ResponseEntity.status(200).build();
+    @Operation(summary = "Agendamentos Realizados no período", 
+        description = "Retorna a quantidadde de agendamentos realizados no período selecionado")
+    @CurrentUser
+    @GetMapping("/realizados-periodo")
+    public ResponseEntity<List<AgendamentoDiarioDTO>> getSchedulesRealizedInPeriod(@RequestParam LocalDate initialDate, @RequestParam LocalDate finalDate) {
+        String email = UserContextHolder.getUser();
+        return ResponseEntity.ok(this.service.getSchedulesRealizedInPeriod(email, initialDate, finalDate));
     }
 }

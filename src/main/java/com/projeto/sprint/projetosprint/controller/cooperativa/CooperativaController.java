@@ -6,7 +6,9 @@ import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaRe
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.service.cooperativa.CooperativaService;
-import com.projeto.sprint.projetosprint.service.material.MaterialPrecoService;
+import com.projeto.sprint.projetosprint.util.annotations.currentUser.CurrentUser;
+import com.projeto.sprint.projetosprint.util.annotations.currentUser.UserContextHolder;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -19,13 +21,11 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
 @RestController
 @RequestMapping("/cooperativas")
 @RequiredArgsConstructor
 public class CooperativaController {
     private final CooperativaService service;
-    private final MaterialPrecoService materialPrecoService;
 
     //LISTA TODAS AS COOPERATIVAS
     @GetMapping("/listar")
@@ -56,10 +56,12 @@ public class CooperativaController {
     }
 
     //ATUALIZANDO INFORMAÇÕES DA COOPERATIVA
+    @Operation(summary = "Atualizar informações da cooperativa", description = "Atualiza as informações da cooperativa, desde os dados pessoais até endereço")
+    @CurrentUser
     @PatchMapping("/atualizar")
-    public ResponseEntity<Void> atualizarCooperativa(@RequestHeader(HttpHeaders.COOKIE) String auth,
-                                                     @Valid @RequestBody CooperativaAtualizarDTO dados){
-        Cooperativa cooperativa = this.service.buscarCooperativa(auth.replace("auth=", ""));
+    public ResponseEntity<Void> atualizarCooperativa(@Valid @RequestBody CooperativaAtualizarDTO dados) {
+        String email = UserContextHolder.getUser();
+        Cooperativa cooperativa = this.service.buscarCooperativa(email);
         this.service.atualizarCooperativa(dados, cooperativa);
         return ResponseEntity.noContent().build();
     }
@@ -94,25 +96,27 @@ public class CooperativaController {
         }
     }
 
-    @PostMapping("/{id}/export/txt")
-    public ResponseEntity<byte[]>downloadTxT(@PathVariable int id){
-        try {
-            byte[] txtData = this.service.downloadCooopeativaTxt(id);
+//    @PostMapping("/{id}/export/txt")
+//    public ResponseEntity<byte[]>downloadTxT(@PathVariable int id){
+//        try {
+//            byte[] txtData = this.service.downloadCooopeativaTxt(id);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cooperativa_" + id + ".txt");
+//            headers.add(HttpHeaders.CONTENT_TYPE, "text/plain; charset=UTF-8");
+//
+//            return new ResponseEntity<>(txtData, headers, HttpStatus.OK);
+//        }
+//        catch (Exception e){
+//            throw new ImportacaoExportacaoException(e.getMessage());
+//        }
+//    }
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cooperativa_" + id + ".txt");
-            headers.add(HttpHeaders.CONTENT_TYPE, "text/plain; charset=UTF-8");
-
-            return new ResponseEntity<>(txtData, headers, HttpStatus.OK);
-        }
-        catch (Exception e){
-            throw new ImportacaoExportacaoException(e.getMessage());
-        }
-    }
-
+    @CurrentUser
     @GetMapping("/buscar")
-    public ResponseEntity<CooperativaResponseDTO> buscarCooperativaByToken(@RequestHeader(HttpHeaders.COOKIE) String auth){
-        Cooperativa cooperativa = this.service.buscarCooperativa(auth.replace("auth=", ""));
+    public ResponseEntity<CooperativaResponseDTO> buscarCooperativaByToken(){
+        String email = UserContextHolder.getUser();
+        Cooperativa cooperativa = this.service.buscarCooperativa(email);
         return ResponseEntity.ok(CooperativaMapper.of(cooperativa));
     }
 }

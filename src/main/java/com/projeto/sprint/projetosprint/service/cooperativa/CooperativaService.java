@@ -7,18 +7,13 @@ import com.projeto.sprint.projetosprint.controller.cooperativa.dto.CooperativaRe
 import com.projeto.sprint.projetosprint.controller.endereco.EnderecoMapper;
 import com.projeto.sprint.projetosprint.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.projeto.sprint.projetosprint.domain.entity.cooperativa.Cooperativa;
-import com.projeto.sprint.projetosprint.domain.entity.email.EmailBoasVindas;
-import com.projeto.sprint.projetosprint.domain.entity.email.EmailConteudo;
 import com.projeto.sprint.projetosprint.domain.entity.endereco.Endereco;
-import com.projeto.sprint.projetosprint.domain.entity.material.MaterialPreco;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.TipoUsuario;
 import com.projeto.sprint.projetosprint.domain.entity.usuario.Usuario;
-import com.projeto.sprint.projetosprint.domain.repository.MaterialPrecoRepository;
 import com.projeto.sprint.projetosprint.exception.EntidadeNaoEncontradaException;
 import com.projeto.sprint.projetosprint.domain.repository.CooperativaRepository;
 import com.projeto.sprint.projetosprint.exception.ImportacaoExportacaoException;
 import com.projeto.sprint.projetosprint.infra.security.jwt.GerenciadorTokenJwt;
-import com.projeto.sprint.projetosprint.service.email.EmailConteudoService;
 import com.projeto.sprint.projetosprint.service.endereco.EnderecoService;
 import com.projeto.sprint.projetosprint.service.usuario.UsuarioService;
 import com.projeto.sprint.projetosprint.util.ListaObj;
@@ -40,10 +35,10 @@ import java.io.*;
 @RequiredArgsConstructor
 public class CooperativaService {
     private final CooperativaRepository repository;
-    private final MaterialPrecoRepository materialPrecoRepository;
+//    private final MaterialPrecoRepository materialPrecoRepository;
     private final UsuarioService usuarioService;
     private final EnderecoService enderecoService;
-    private final EmailConteudoService emailService;
+//    private final EmailConteudoService emailService;
     private final GerenciadorTokenJwt tokenJwt;
     private final PasswordEncoder passwordEncoder;
 
@@ -68,18 +63,6 @@ public class CooperativaService {
 
         Cooperativa cooperativa = CooperativaMapper.of(dados);
         cooperativa.setUsuario(usuario);
-
-//        UUID idEmail = this.emailService.criarEmail(new EmailConteudo(
-//                "Seja bem vindo ao ECOsystem, " + dados.getNome() + "!",
-//                "Esperamos que nossa aplicação auxilie na rotina da Cooperativa " + dados.getNome() + " <br> :)"));
-//
-//        EmailBoasVindas destinatario = new EmailBoasVindas(
-//                dados.getNome(), dados.email);
-//
-//        this.emailService.adicionarDestinatario(
-//                idEmail, destinatario);
-//
-//        this.emailService.publicarEmail(idEmail);
 
         return this.repository.save(cooperativa);
     }
@@ -163,52 +146,52 @@ public class CooperativaService {
         }
     }
 
-    public byte[] downloadCooopeativaTxt(int id){
-        Cooperativa cooperativa = buscarCoperativaId(id);
-
-        try{
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
-
-            String header = "00COOPERATIVA";
-            header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-
-            outputStreamWriter.write(header+"\n");
-
-            String corpo = "02";
-            corpo += String.format("%-25.25s", cooperativa.getNome());
-            corpo += String.format("%-16.16s", cooperativa.getCnpj());
-            corpo += String.format("%-30.30s", cooperativa.getUsuario().getEmail());
-
-            outputStreamWriter.write(corpo+"\n");
-            List<MaterialPreco> listMaterial = materialPrecoRepository.findByCooperativaIdOrderByVlrMaterial(id);
-
-            String[] materiais = new String[]{"PET", "Ferro", "Papelão","Alumínio"};
-
-            for (String material : materiais){
-                String corpo2 = "03";
-                corpo2 += String.format("%-17.17s","Material-"+material);
-                Double valor = 0.0;
-                for(MaterialPreco m : listMaterial){
-                    if (m.getNome().equals(material)){
-                        valor = m.getVlrMaterial();
-                    }
-                }
-                corpo2 += String.format("%3.2f",valor);
-                outputStreamWriter.write(corpo2+"\n");
-            }
-
-            String trailer = "01";
-            trailer += String.format("%10d",listMaterial.size() +1);
-
-            outputStreamWriter.write(trailer);
-            outputStreamWriter.close();
-            return byteArrayOutputStream.toByteArray();
-        }
-        catch (IOException e){
-            throw new ImportacaoExportacaoException(e.getMessage());
-        }
-    }
+//    public byte[] downloadCooopeativaTxt(int id){
+//        Cooperativa cooperativa = buscarCoperativaId(id);
+//
+//        try{
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+//
+//            String header = "00COOPERATIVA";
+//            header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+//
+//            outputStreamWriter.write(header+"\n");
+//
+//            String corpo = "02";
+//            corpo += String.format("%-25.25s", cooperativa.getNome());
+//            corpo += String.format("%-16.16s", cooperativa.getCnpj());
+//            corpo += String.format("%-30.30s", cooperativa.getUsuario().getEmail());
+//
+//            outputStreamWriter.write(corpo+"\n");
+////            List<MaterialPreco> listMaterial = materialPrecoRepository.findByCooperativaIdOrderByVlrMaterial(id);
+//
+//            String[] materiais = new String[]{"PET", "Ferro", "Papelão","Alumínio"};
+//
+//            for (String material : materiais){
+//                String corpo2 = "03";
+//                corpo2 += String.format("%-17.17s","Material-"+material);
+//                Double valor = 0.0;
+////                for(MaterialPreco m : listMaterial){
+////                    if (m.getNome().equals(material)){
+////                        valor = m.getVlrMaterial();
+////                    }
+////                }
+//                corpo2 += String.format("%3.2f",valor);
+//                outputStreamWriter.write(corpo2+"\n");
+//            }
+//
+//            String trailer = "01";
+//            trailer += String.format("%10d",listMaterial.size() +1);
+//
+//            outputStreamWriter.write(trailer);
+//            outputStreamWriter.close();
+//            return byteArrayOutputStream.toByteArray();
+//        }
+//        catch (IOException e){
+//            throw new ImportacaoExportacaoException(e.getMessage());
+//        }
+//    }
 
     public Cooperativa buscarCooperativaEmail(String email){
         if (email.contains("@")){
@@ -223,9 +206,7 @@ public class CooperativaService {
         }
     }
 
-    public Cooperativa buscarCooperativa(String auth) {
-        String email = tokenJwt.getUsernameFromToken(auth);
-
+    public Cooperativa buscarCooperativa(String email) {
         return this.repository.findByUsuarioEmail(email).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
                         "Email inválido"
