@@ -1,0 +1,22 @@
+name: Ecosystem API CD
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Pull Docker image
+        run: docker pull niltongabriel/ecosystem-api:latest
+
+      - name: Stop old Docker Container
+        run: docker stop ecosystem-api || true
+      
+      - name: Remove old Docker Container
+        run: docker rm ecosystem-api || true
+
+      - name: Run Docker container
+        run: docker run --name ecosystem-api -d -p 8080:8080 niltongabriel/ecosystem-api:latest
