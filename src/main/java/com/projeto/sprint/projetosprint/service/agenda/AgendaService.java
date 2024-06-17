@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -174,5 +175,10 @@ public class AgendaService {
         } else {
             throw new DataInvalidaException("Intervalo de datas inválido.");
         }
+    }
+
+    public Agenda getScheduleDetails(int scheduleId) {
+        return this.repository.findById(scheduleId).orElseThrow(
+                () -> new EntidadeNaoEncontradaException("Agendamento não encontrado!"));
     }
 }

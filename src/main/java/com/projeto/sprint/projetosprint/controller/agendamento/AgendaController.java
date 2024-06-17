@@ -109,4 +109,13 @@ public class AgendaController {
         String email = UserContextHolder.getUser();
         return ResponseEntity.ok(this.service.getSchedulesRealizedInPeriod(email, initialDate, finalDate));
     }
+
+    @Operation
+    @CurrentUser
+    @GetMapping("/detalhes-agendamento/{scheduleId}")
+    public ResponseEntity<Agenda> detalhesAgendamento(@PathVariable int scheduleId) {
+        Agenda detalhes = this.service.getScheduleDetails(scheduleId);
+
+        return ResponseEntity.ok(detalhes);
+    }
 }
