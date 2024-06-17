@@ -1,9 +1,15 @@
-FROM openjdk:17-jdk-alpine
+FROM maven:3-openjdk-17 as builder
+
+WORKDIR /build
+
+COPY . .
+
+RUN mvn clean package -DskipTests -Dcheckstyle.skip=true
+
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY ./ecosystem-api.jar /app/ecosystem-api.jar
+COPY --from=builder /build/target/*.jar /app/app.jar
 
-EXPOSE 8080
-
-CMD ["java", "-jar", "/app/ecosystem-api.jar"]
+CMD ["java", "-jar", "app.jar"]

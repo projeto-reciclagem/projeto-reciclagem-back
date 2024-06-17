@@ -12,15 +12,10 @@ import java.time.LocalDateTime;
 @Data
 public class AgendaResponseDTO {
     private Integer id;
-    @FutureOrPresent
-    private LocalDateTime datAgendamento;
-    @FutureOrPresent
-    private LocalDateTime datRetirada;
-
-    @Positive
+    private String cooperativa;
+    private String condominio;
     private Integer qtBag;
+    private LocalDateTime datAgendamento;
     private Status status;
-
-    private CooperativaResponseDTO cooperativa;
-    private CondominioResponseDTO condominio;
+    private String endereco;
 }

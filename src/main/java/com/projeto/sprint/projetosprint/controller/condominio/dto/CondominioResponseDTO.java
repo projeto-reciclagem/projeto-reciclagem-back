@@ -7,7 +7,7 @@ public class CondominioResponseDTO {
     private Integer id;
     private String nome;
     private String email;
-    private String ImgUsuario;
+    private String imgUsuario;
 
     private String cnpj;
     private Integer qtdMoradores;

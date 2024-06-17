@@ -44,7 +44,7 @@ public class AgendaService {
         );
 
         agenda.setCondominio(
-                this.condominioService.buscaCondominioId(dados.getFkCondominio())
+                this.condominioService.buscarCondominioId(dados.getFkCondominio())
         );
 
         return this.repository.save(agenda);
@@ -104,6 +104,33 @@ public class AgendaService {
         return null;
     }
 
+    public List<Agenda> historicoDePedidosCondominio(int idCondominio) {
+
+        if (idCondominio != 0) {
+            List<Agenda> agendamentos =  this.repository.findByAgendamentoCondominio(idCondominio);
+            return agendamentos;
+        }
+        return null;
+    }
+
+    public Agenda historicoDePedidosCondominioAnalise(int idCondominio) {
+
+        if (idCondominio != 0) {
+            return this.repository.findByAgendamentoAnalise(idCondominio).orElseThrow(
+                    () -> new EntidadeNaoEncontradaException("Agendamento não encontrado")
+            );
+        }
+        return null;
+    }
+
+    public List<Agenda> comprovantePedidosCondominioConcluido(int idCondominio) {
+
+        if (idCondominio != 0) {
+            return this.repository.findByAgendamentoConcluido(idCondominio);
+        }
+        return null;
+    }
+
     public Agenda buscarAgendaPorId(int id){
         return this.repository.findById(id).get();
     }
@@ -115,6 +142,8 @@ public class AgendaService {
                 dataAtual.minusMonths(1),
                 dataAtual);
     }
+
+
 
     public Integer coletasRealizadasUltimoMes(int idCooperativa){
         LocalDateTime dataAtual = LocalDateTime.now();

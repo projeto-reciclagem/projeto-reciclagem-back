@@ -18,6 +18,7 @@ public class Agenda {
     private LocalDateTime datAgendamento;
     private LocalDateTime datRetirada;
     private Integer qtBag;
+
     private Status status;
 
     @ManyToOne
@@ -27,5 +28,5 @@ public class Agenda {
     @ManyToOne
     @JoinColumn(name = "fk_condominio")
     private Condominio condominio;
-
 }
+
