@@ -54,7 +54,8 @@ public class SecurityConfiguration {
             new AntPathRequestMatcher("/condominios/**", "GET"),
             new AntPathRequestMatcher("/agendamentos/**", "POST"),
             new AntPathRequestMatcher("/agendamentos/**", "GET"),
-            new AntPathRequestMatcher("/condominios/cadastrar")
+            new AntPathRequestMatcher("/condominios/cadastrar"),
+            new AntPathRequestMatcher("/condominios/atualizar/{id}")
 
     };
 
